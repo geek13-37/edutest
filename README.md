@@ -169,4 +169,3 @@ frontend/
                   dashboard, classes, tests (редактор + AI-панель), take, results
 docker-compose.yml
 ```
-# edutest
