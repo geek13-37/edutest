@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Нейтральные */
+  --background: 210 20% 98%; /* #F9FAFB */
+  --foreground: 221 39% 11%; /* #111827 Text Primary */
+  --card: 0 0% 100%; /* #FFFFFF Surface */
+  --card-foreground: 221 39% 11%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 9% 46%; /* #6B7280 Text Secondary */
+  --border: 220 13% 91%; /* #E5E7EB */
+  --input: 220 13% 91%;
+
+  /* Primary (Indigo) */
+  --primary: 243 75% 59%; /* #4F46E5 */
+  --primary-foreground: 0 0% 100%;
+  --primary-dark: 244 55% 41%; /* #3730A3 hover / заголовки */
+  --primary-light: 226 100% 97%; /* #EEF2FF фоны/подложки */
+  --ring: 243 75% 59%;
+
+  /* Индиго-подложки как secondary / accent */
+  --secondary: 226 100% 97%; /* #EEF2FF */
+  --secondary-foreground: 244 55% 41%;
+  --accent: 226 100% 97%;
+  --accent-foreground: 244 55% 41%;
+
+  /* AI Accent (Violet) */
+  --ai: 258 90% 66%; /* #8B5CF6 */
+  --ai-foreground: 0 0% 100%;
+  --ai-light: 250 100% 98%; /* #F5F3FF */
+
+  /* Семантика результатов */
+  --success: 160 84% 39%; /* #10B981 */
+  --success-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%; /* #EF4444 Error */
+  --destructive-foreground: 0 0% 100%;
+  --warning: 38 92% 50%; /* #F59E0B */
+  --warning-foreground: 221 39% 11%;
+  --info: 217 91% 60%; /* #3B82F6 */
+  --info-foreground: 0 0% 100%;
+
+  --radius: 0.6rem;
+}
+
+.dark {
+  /* Темная тема в духе Kanagawa (wave): теплый приглушенный "суми" вместо
+     холодного сине-черного, мягкие акценты без неона */
+
+  /* Нейтральные (sumiInk-фон, но текст почти белый по просьбе) */
+  --background: 240 13% 14%; /* #1F1F28 sumiInk1 */
+  --foreground: 0 0% 96%; /* почти белый, как в светлой теме */
+  --card: 240 12% 18%; /* #282833 sumiInk2 */
+  --card-foreground: 0 0% 96%;
+  --muted: 240 11% 20%;
+  --muted-foreground: 240 8% 68%; /* приглушенный, но заметно светлее */
+  --border: 240 12% 25%; /* #373746 sumiInk3 */
+  --input: 240 12% 25%;
+
+  /* Primary (индиго, приглушенный под фон) */
+  --primary: 232 52% 62%;
+  --primary-foreground: 0 0% 100%;
+  --primary-dark: 232 58% 74%; /* светлее для hover / заголовков */
+  --primary-light: 236 26% 24%; /* подложка hover */
+  --ring: 232 52% 62%;
+
+  --secondary: 240 12% 22%;
+  --secondary-foreground: 0 0% 96%;
+  --accent: 236 22% 26%;
+  --accent-foreground: 0 0% 98%;
+
+  /* AI Accent (oniViolet #957FB8) */
+  --ai: 263 32% 64%;
+  --ai-foreground: 0 0% 100%;
+  --ai-light: 264 20% 24%;
+
+  /* Семантика результатов (springGreen / carpYellow / waveRed / springBlue) */
+  --success: 87 34% 58%; /* #98BB6C */
+  --success-foreground: 90 30% 12%;
+  --destructive: 352 66% 66%; /* #E46876 */
+  --destructive-foreground: 0 0% 100%;
+  --warning: 38 60% 70%; /* #E6C384 */
+  --warning-foreground: 40 45% 12%;
+  --info: 197 42% 64%; /* #7FB4CA */
+  --info-foreground: 200 45% 12%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  margin: 0;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
