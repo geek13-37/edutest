@@ -1,9 +1,12 @@
+import re
 import uuid
 
 from pydantic import Field, field_validator, model_validator
 
 from app.models import QuestionType
 from app.schemas.common import ORMModel, StrictModel
+
+_MEDIA_REF = re.compile(r"^/api/v1/media/[0-9a-fA-F-]{36}$")
 
 
 class OptionIn(StrictModel):
@@ -14,9 +17,18 @@ class OptionIn(StrictModel):
 class QuestionIn(StrictModel):
     type: QuestionType
     text: str = Field(min_length=1, max_length=2000)
+    image_url: str | None = Field(default=None, max_length=300)
     options: list[OptionIn] = Field(default_factory=list, max_length=10)
     correct: list[str] = Field(min_length=1, max_length=10)
     points: int = Field(default=1, ge=1, le=100)
+
+    @field_validator("image_url")
+    @classmethod
+    def _own_media_ref(cls, v: str | None) -> str | None:
+        # принимаем только ссылку на нашу же media; чужое (в т.ч. выдумки ИИ) отбрасываем
+        if not v or not _MEDIA_REF.match(v):
+            return None
+        return v
 
     @field_validator("options")
     @classmethod
@@ -58,6 +70,7 @@ class QuestionOut(ORMModel):
     position: int
     type: QuestionType
     text: str
+    image_url: str | None = None
     options: list
     correct: list
     points: int
@@ -70,5 +83,6 @@ class QuestionForStudent(ORMModel):
     position: int
     type: QuestionType
     text: str
+    image_url: str | None = None
     options: list
     points: int

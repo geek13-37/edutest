@@ -25,11 +25,15 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 
 class BodySizeLimitMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app, max_bytes: int):
+    def __init__(self, app, max_bytes: int, exempt_prefixes: tuple[str, ...] = ()):
         super().__init__(app)
         self.max_bytes = max_bytes
+        self.exempt_prefixes = exempt_prefixes
 
     async def dispatch(self, request: Request, call_next):
+        path = request.url.path
+        if any(path.startswith(p) or path.endswith(p) for p in self.exempt_prefixes):
+            return await call_next(request)
         cl = request.headers.get("content-length")
         if cl is not None:
             try:

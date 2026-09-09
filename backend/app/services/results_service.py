@@ -105,6 +105,7 @@ def attempt_review(db: Session, teacher: User, attempt_id: uuid.UUID) -> dict:
                     "position": q.position,
                     "type": q.type,
                     "text": q.text,
+                    "image_url": q.image_url,
                     "options": q.options,
                     "correct": q.correct,
                     "points": q.points,

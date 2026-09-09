@@ -76,6 +76,7 @@ def replace_questions(db: Session, owner_id: uuid.UUID, test_id: uuid.UUID, ques
                 position=pos,
                 type=q.type,
                 text=q.text.strip(),
+                image_url=q.image_url,
                 options=[o.model_dump() for o in q.options],
                 correct=list(q.correct),
                 points=q.points,
@@ -100,6 +101,7 @@ def questions_as_ai_payload(test: Test) -> list[dict]:
         {
             "type": q.type.value,
             "text": q.text,
+            "image_url": q.image_url,
             "options": q.options,
             "correct": q.correct,
             "points": q.points,

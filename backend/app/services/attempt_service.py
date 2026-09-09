@@ -127,6 +127,7 @@ def get_attempt_state(db: Session, student_id: uuid.UUID, attempt_id: uuid.UUID)
                 "position": pos,
                 "type": q.type,
                 "text": q.text,
+                "image_url": q.image_url,
                 "options": _student_options(q, attempt),
                 "points": q.points,
             }

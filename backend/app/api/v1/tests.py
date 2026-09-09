@@ -93,7 +93,14 @@ async def ai_generate(
         raise HTTPException(status.HTTP_502_BAD_GATEWAY, str(e))
     if data.mode == "append":
         existing = [
-            {"type": q.type.value, "text": q.text, "options": q.options, "correct": q.correct, "points": q.points}
+            {
+                "type": q.type.value,
+                "text": q.text,
+                "image_url": q.image_url,
+                "options": q.options,
+                "correct": q.correct,
+                "points": q.points,
+            }
             for q in test.questions
         ]
         merged = existing + [q.model_dump() for q in generated]
@@ -109,7 +116,8 @@ async def ai_revise(
     # правим тот черновик, что сейчас на экране, а не сохраненную версию
     test_service.get_owned_test(db, teacher.id, test_id)
     current = [
-        {"type": q.type.value, "text": q.text, "options": [o.model_dump() for o in q.options],
+        {"type": q.type.value, "text": q.text, "image_url": q.image_url,
+         "options": [o.model_dump() for o in q.options],
          "correct": list(q.correct), "points": q.points}
         for q in data.questions
     ]
