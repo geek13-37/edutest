@@ -18,7 +18,6 @@ export function blankQuestion(type: QuestionType = "single"): QuestionDraft {
     return {
       type,
       text: "",
-      image_url: null,
       options: [
         { id: "true", text: "Верно" },
         { id: "false", text: "Неверно" },
@@ -28,12 +27,11 @@ export function blankQuestion(type: QuestionType = "single"): QuestionDraft {
     };
   }
   if (type === "short") {
-    return { type, text: "", image_url: null, options: [], correct: [""], points: 1 };
+    return { type, text: "", options: [], correct: [""], points: 1 };
   }
   return {
     type,
     text: "",
-    image_url: null,
     options: [
       { id: "a", text: "" },
       { id: "b", text: "" },
@@ -45,10 +43,8 @@ export function blankQuestion(type: QuestionType = "single"): QuestionDraft {
 }
 
 export function coerceType(q: QuestionDraft, type: QuestionType): QuestionDraft {
-  if (type === "boolean")
-    return { ...blankQuestion("boolean"), text: q.text, image_url: q.image_url, points: q.points };
-  if (type === "short")
-    return { type, text: q.text, image_url: q.image_url, options: [], correct: [""], points: q.points };
+  if (type === "boolean") return { ...blankQuestion("boolean"), text: q.text, points: q.points };
+  if (type === "short") return { type, text: q.text, options: [], correct: [""], points: q.points };
   const wasShort = q.type === "short";
   const opts = !wasShort && q.options.length >= 2 ? q.options : blankQuestion(type).options;
   let correct = q.correct.filter((c) => opts.some((o) => o.id === c));

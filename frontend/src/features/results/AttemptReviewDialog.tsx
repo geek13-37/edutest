@@ -49,15 +49,6 @@ export function AttemptReviewDialog({
                     {i + 1}. <RichText>{a.question.text}</RichText>
                   </p>
                 </div>
-                {a.question.image_url && (
-                  <div className="mt-2 pl-7">
-                    <img
-                      src={a.question.image_url}
-                      alt="Картинка к вопросу"
-                      className="max-h-56 rounded-md border object-contain"
-                    />
-                  </div>
-                )}
                 {a.question.type === "short" ? (
                   <div className="mt-2 space-y-0.5 pl-7 text-sm">
                     <p>

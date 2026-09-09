@@ -47,19 +47,11 @@ import { blankQuestion, validateQuestions } from "./question-utils";
 function toDraft(q: {
   type: QuestionType;
   text: string;
-  image_url: string | null;
   options: { id: string; text: string }[];
   correct: string[];
   points: number;
 }): QuestionDraft {
-  return {
-    type: q.type,
-    text: q.text,
-    image_url: q.image_url,
-    options: q.options,
-    correct: q.correct,
-    points: q.points,
-  };
+  return { type: q.type, text: q.text, options: q.options, correct: q.correct, points: q.points };
 }
 
 type Item = { uid: string; q: QuestionDraft };
@@ -69,13 +61,11 @@ const wrap = (q: QuestionDraft): Item => ({ uid: rid(), q });
 function SortableQuestion({
   item,
   index,
-  testId,
   onChange,
   onRemove,
 }: {
   item: Item;
   index: number;
-  testId: string;
   onChange: (q: QuestionDraft) => void;
   onRemove: () => void;
 }) {
@@ -90,7 +80,6 @@ function SortableQuestion({
     >
       <QuestionCard
         index={index}
-        testId={testId}
         question={item.q}
         onChange={onChange}
         onRemove={onRemove}
@@ -308,7 +297,6 @@ export function TestEditorPage() {
                     key={it.uid}
                     item={it}
                     index={i}
-                    testId={id}
                     onChange={(nq) => changeAt(it.uid, nq)}
                     onRemove={() => removeAt(it.uid)}
                   />

@@ -180,7 +180,6 @@ export interface Question {
   position: number;
   type: QuestionType;
   text: string;
-  image_url: string | null;
   options: Option[];
   correct: string[];
   points: number;
@@ -189,7 +188,6 @@ export interface Question {
 export interface QuestionDraft {
   type: QuestionType;
   text: string;
-  image_url: string | null;
   options: Option[];
   correct: string[];
   points: number;
@@ -303,7 +301,6 @@ export interface StudentQuestion {
   position: number;
   type: QuestionType;
   text: string;
-  image_url: string | null;
   options: Option[];
   points: number;
 }

@@ -8,14 +8,13 @@ import { cn } from "@/lib/utils";
 export interface RenderableQuestion {
   type: QuestionType;
   text: string;
-  image_url: string | null;
   options: Option[];
 }
 
 /**
- * Общий вид вопроса «глазами ученика»: текст с форматированием, картинка,
- * варианты или поле короткого ответа. Используется и при прохождении, и в
- * предпросмотре теста из редактора.
+ * Общий вид вопроса «глазами ученика»: текст с форматированием, варианты или
+ * поле короткого ответа. Используется и при прохождении, и в предпросмотре
+ * теста из редактора.
  */
 export function QuestionBody({
   question,
@@ -48,14 +47,6 @@ export function QuestionBody({
       <RichText as="p" className="text-lg font-medium leading-snug">
         {q.text}
       </RichText>
-
-      {q.image_url && (
-        <img
-          src={q.image_url}
-          alt="Иллюстрация к вопросу"
-          className="max-h-80 w-auto rounded-md border object-contain"
-        />
-      )}
 
       {q.type === "multiple" && (
         <p className="text-xs text-muted-foreground">Можно выбрать несколько вариантов</p>

@@ -71,17 +71,6 @@ export function usePublishTest(id: string) {
   });
 }
 
-export function useUploadQuestionImage(testId: string) {
-  return useMutation({
-    mutationFn: async (file: File) => {
-      const form = new FormData();
-      form.append("file", file);
-      const { data } = await api.post<{ url: string }>(`/tests/${testId}/images`, form);
-      return data.url;
-    },
-  });
-}
-
 export function useAIGenerate(id: string) {
   return useMutation({
     mutationFn: async (data: { prompt: string; count: number; mode: "replace" | "append" }) =>
