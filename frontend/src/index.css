@@ -3,77 +3,76 @@
 @tailwind utilities;
 
 :root {
-  /* Нейтральные */
-  --background: 210 20% 98%; /* #F9FAFB */
-  --foreground: 221 39% 11%; /* #111827 Text Primary */
+  /* Нейтральные (слегка теплые, с легкой зеленцой) */
+  --background: 140 12% 97%; /* #F8F9F8 */
+  --foreground: 160 22% 10%; /* #14201B графит с зеленцой */
   --card: 0 0% 100%; /* #FFFFFF Surface */
-  --card-foreground: 221 39% 11%;
-  --muted: 220 14% 96%;
-  --muted-foreground: 220 9% 46%; /* #6B7280 Text Secondary */
-  --border: 220 13% 91%; /* #E5E7EB */
-  --input: 220 13% 91%;
+  --card-foreground: 160 22% 10%;
+  --muted: 140 12% 96%;
+  --muted-foreground: 155 8% 40%; /* вторичный текст */
+  --border: 150 10% 90%; /* #E3E7E4 */
+  --input: 150 10% 90%;
 
-  /* Primary (Indigo) */
-  --primary: 243 75% 59%; /* #4F46E5 */
+  /* Primary (Emerald) */
+  --primary: 164 85% 26%; /* #0A7D5E */
   --primary-foreground: 0 0% 100%;
-  --primary-dark: 244 55% 41%; /* #3730A3 hover / заголовки */
-  --primary-light: 226 100% 97%; /* #EEF2FF фоны/подложки */
-  --ring: 243 75% 59%;
+  --primary-dark: 164 85% 16%; /* #064E3B hover / заголовки */
+  --primary-light: 158 44% 94%; /* #E9F7F1 фоны/подложки */
+  --ring: 164 85% 26%;
 
-  /* Индиго-подложки как secondary / accent */
-  --secondary: 226 100% 97%; /* #EEF2FF */
-  --secondary-foreground: 244 55% 41%;
-  --accent: 226 100% 97%;
-  --accent-foreground: 244 55% 41%;
+  /* Мятные подложки как secondary / accent */
+  --secondary: 158 44% 94%; /* #E9F7F1 */
+  --secondary-foreground: 164 85% 16%;
+  --accent: 158 44% 94%;
+  --accent-foreground: 164 85% 16%;
 
-  /* AI Accent (Violet) */
-  --ai: 258 90% 66%; /* #8B5CF6 */
+  /* AI Accent (приглушенный индиго) */
+  --ai: 248 57% 60%; /* #6D5DD3 */
   --ai-foreground: 0 0% 100%;
-  --ai-light: 250 100% 98%; /* #F5F3FF */
+  --ai-light: 250 60% 96%; /* #EEEBFA */
 
   /* Семантика результатов */
-  --success: 160 84% 39%; /* #10B981 */
+  --success: 142 72% 37%; /* #16A34A */
   --success-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%; /* #EF4444 Error */
+  --destructive: 0 72% 51%; /* #DC2626 Error */
   --destructive-foreground: 0 0% 100%;
-  --warning: 38 92% 50%; /* #F59E0B */
-  --warning-foreground: 221 39% 11%;
-  --info: 217 91% 60%; /* #3B82F6 */
+  --warning: 32 95% 44%; /* #D97706 */
+  --warning-foreground: 160 22% 12%;
+  --info: 200 98% 39%; /* #0284C7 */
   --info-foreground: 0 0% 100%;
 
   --radius: 0.6rem;
 }
 
 .dark {
-  /* Темная тема в духе Kanagawa (wave): теплый приглушенный "суми" вместо
-     холодного сине-черного, мягкие акценты без неона */
+  /* Темная тема: теплый угольный с зеленым подтоном, мягкие акценты без неона */
 
-  /* Нейтральные (sumiInk-фон, но текст почти белый по просьбе) */
-  --background: 240 13% 14%; /* #1F1F28 sumiInk1 */
-  --foreground: 0 0% 96%; /* почти белый, как в светлой теме */
-  --card: 240 12% 18%; /* #282833 sumiInk2 */
-  --card-foreground: 0 0% 96%;
-  --muted: 240 11% 20%;
-  --muted-foreground: 240 8% 68%; /* приглушенный, но заметно светлее */
-  --border: 240 12% 25%; /* #373746 sumiInk3 */
-  --input: 240 12% 25%;
+  /* Нейтральные */
+  --background: 158 18% 11%; /* #16211C */
+  --foreground: 150 8% 95%; /* почти белый */
+  --card: 156 16% 15%; /* #1E2C26 */
+  --card-foreground: 150 8% 95%;
+  --muted: 156 13% 18%;
+  --muted-foreground: 150 7% 65%;
+  --border: 154 12% 24%;
+  --input: 154 12% 24%;
 
-  /* Primary (индиго, приглушенный под фон) */
-  --primary: 232 52% 62%;
+  /* Primary (emerald, приглушенный под фон) */
+  --primary: 158 50% 38%;
   --primary-foreground: 0 0% 100%;
-  --primary-dark: 232 58% 74%; /* светлее для hover / заголовков */
-  --primary-light: 236 26% 24%; /* подложка hover */
-  --ring: 232 52% 62%;
+  --primary-dark: 158 52% 62%; /* светлее для hover / заголовков */
+  --primary-light: 158 22% 22%; /* подложка hover */
+  --ring: 158 50% 42%;
 
-  --secondary: 240 12% 22%;
-  --secondary-foreground: 0 0% 96%;
-  --accent: 236 22% 26%;
+  --secondary: 156 12% 20%;
+  --secondary-foreground: 150 8% 95%;
+  --accent: 156 15% 25%;
   --accent-foreground: 0 0% 98%;
 
-  /* AI Accent (oniViolet #957FB8) */
-  --ai: 263 32% 64%;
+  /* AI Accent (приглушенный индиго) */
+  --ai: 248 42% 70%;
   --ai-foreground: 0 0% 100%;
-  --ai-light: 264 20% 24%;
+  --ai-light: 248 22% 25%;
 
   /* Семантика результатов (springGreen / carpYellow / waveRed / springBlue) */
   --success: 87 34% 58%; /* #98BB6C */
