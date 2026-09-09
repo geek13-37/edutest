@@ -1,4 +1,31 @@
-import { ArrowLeft, Check, Plus, Save, Send, Settings2, TriangleAlert } from "lucide-react";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  ArrowLeft,
+  Check,
+  Eye,
+  GripVertical,
+  Plus,
+  Save,
+  Send,
+  Settings2,
+  TriangleAlert,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
@@ -9,20 +36,78 @@ import { Button } from "@/components/ui/button";
 import { PageLoader, Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/components/ui/toast";
 import { apiError } from "@/lib/api";
+import { cn } from "@/lib/utils";
 import { AIPanel } from "./AIPanel";
 import { AssignTestDialog } from "./AssignTestDialog";
 import { QuestionCard } from "./QuestionCard";
+import { TestPreviewDialog } from "./TestPreviewDialog";
 import { TestSettingsDialog } from "./TestSettingsDialog";
 import { blankQuestion, validateQuestions } from "./question-utils";
 
 function toDraft(q: {
   type: QuestionType;
   text: string;
+  image_url: string | null;
   options: { id: string; text: string }[];
   correct: string[];
   points: number;
 }): QuestionDraft {
-  return { type: q.type, text: q.text, options: q.options, correct: q.correct, points: q.points };
+  return {
+    type: q.type,
+    text: q.text,
+    image_url: q.image_url,
+    options: q.options,
+    correct: q.correct,
+    points: q.points,
+  };
+}
+
+type Item = { uid: string; q: QuestionDraft };
+const rid = () => crypto.randomUUID();
+const wrap = (q: QuestionDraft): Item => ({ uid: rid(), q });
+
+function SortableQuestion({
+  item,
+  index,
+  testId,
+  onChange,
+  onRemove,
+}: {
+  item: Item;
+  index: number;
+  testId: string;
+  onChange: (q: QuestionDraft) => void;
+  onRemove: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: item.uid,
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Translate.toString(transform), transition }}
+      className={cn(isDragging && "relative z-10 opacity-70")}
+    >
+      <QuestionCard
+        index={index}
+        testId={testId}
+        question={item.q}
+        onChange={onChange}
+        onRemove={onRemove}
+        dragHandle={
+          <button
+            type="button"
+            className="flex h-9 w-6 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted-foreground active:cursor-grabbing"
+            title="Перетащить вопрос"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="h-4 w-4" />
+          </button>
+        }
+      />
+    </div>
+  );
 }
 
 export function TestEditorPage() {
@@ -34,20 +119,27 @@ export function TestEditorPage() {
   const publish = usePublishTest(id);
   const toast = useToast();
 
-  const [draft, setDraft] = useState<QuestionDraft[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [dirty, setDirty] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (test && !loaded) {
-      setDraft(test.questions.map(toDraft));
+      setItems(test.questions.map((q) => wrap(toDraft(q))));
       setLoaded(true);
     }
   }, [test, loaded]);
 
+  const draft = useMemo(() => items.map((it) => it.q), [items]);
   const issues = useMemo(() => validateQuestions(draft), [draft]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   if (isLoading || !test) return <PageLoader />;
 
@@ -60,12 +152,31 @@ export function TestEditorPage() {
           ? `Исправьте вопрос ${issues[0].index + 1}: ${issues[0].message}`
           : null;
 
-  const mutate = (updater: (d: QuestionDraft[]) => QuestionDraft[]) => {
-    setDraft((d) => updater(d));
+  const addQuestion = () => {
+    setItems((p) => [...p, wrap(blankQuestion())]);
     setDirty(true);
   };
 
-  const addQuestion = () => mutate((d) => [...d, blankQuestion()]);
+  const changeAt = (uid: string, nq: QuestionDraft) => {
+    setItems((p) => p.map((it) => (it.uid === uid ? { ...it, q: nq } : it)));
+    setDirty(true);
+  };
+
+  const removeAt = (uid: string) => {
+    setItems((p) => p.filter((it) => it.uid !== uid));
+    setDirty(true);
+  };
+
+  const onDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    setItems((p) => {
+      const from = p.findIndex((it) => it.uid === active.id);
+      const to = p.findIndex((it) => it.uid === over.id);
+      return from < 0 || to < 0 ? p : arrayMove(p, from, to);
+    });
+    setDirty(true);
+  };
 
   const save = async () => {
     if (issues.length) {
@@ -116,6 +227,10 @@ export function TestEditorPage() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setPreviewOpen(true)}>
+              <Eye className="h-4 w-4" />
+              <span>Предпросмотр</span>
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => setSettingsOpen(true)}>
               <Settings2 className="h-4 w-4" />
               <span>Настройки</span>
@@ -178,25 +293,29 @@ export function TestEditorPage() {
               Вопросов пока нет. Добавьте вручную или сгенерируйте через ИИ справа.
             </div>
           )}
-          {draft.map((q, i) => (
-            <QuestionCard
-              key={i}
-              index={i}
-              total={draft.length}
-              question={q}
-              onChange={(nq) => mutate((d) => d.map((x, j) => (j === i ? nq : x)))}
-              onRemove={() => mutate((d) => d.filter((_, j) => j !== i))}
-              onMove={(dir) =>
-                mutate((d) => {
-                  const j = i + dir;
-                  if (j < 0 || j >= d.length) return d;
-                  const copy = [...d];
-                  [copy[i], copy[j]] = [copy[j], copy[i]];
-                  return copy;
-                })
-              }
-            />
-          ))}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={onDragEnd}
+          >
+            <SortableContext
+              items={items.map((it) => it.uid)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-4">
+                {items.map((it, i) => (
+                  <SortableQuestion
+                    key={it.uid}
+                    item={it}
+                    index={i}
+                    testId={id}
+                    onChange={(nq) => changeAt(it.uid, nq)}
+                    onRemove={() => removeAt(it.uid)}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
           <Button variant="outline" onClick={addQuestion} className="w-full">
             <Plus className="h-4 w-4" />
             <span>Добавить вопрос</span>
@@ -211,13 +330,19 @@ export function TestEditorPage() {
             initialCount={aiSeed?.count}
             autoGenerate={!!aiSeed && loaded && test.questions.length === 0}
             onResult={(qs, mode) => {
-              setDraft((d) => (mode === "append" ? [...d, ...qs] : qs));
+              setItems((prev) => (mode === "append" ? [...prev, ...qs.map(wrap)] : qs.map(wrap)));
               setDirty(true);
             }}
           />
         </div>
       </div>
 
+      <TestPreviewDialog
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        questions={draft}
+        title={test.title}
+      />
       <TestSettingsDialog test={test} open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       <AssignTestDialog
         testId={id}

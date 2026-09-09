@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -7,13 +7,12 @@ import { useAttempt, useSaveAnswer, useSubmitAttempt } from "@/api/attempts";
 import type { AttemptResult } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { RichText } from "@/components/ui/rich-text";
 import { PageLoader, Spinner } from "@/components/ui/spinner";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useToast } from "@/components/ui/toast";
 import { apiError } from "@/lib/api";
 import { cn, pluralRu } from "@/lib/utils";
+import { QuestionBody } from "./QuestionBody";
 
 function useCountdown(deadline: string | null) {
   const [left, setLeft] = useState<number | null>(null);
@@ -107,40 +106,26 @@ export function AttemptPage() {
   const q = questions[current];
   const selected = answers[q.id] ?? [];
 
-  const setShortAnswer = (value: string) => {
-    setAnswers((a) => ({ ...a, [q.id]: value ? [value] : [] }));
+  const persist = (next: string[]) => {
     if (shortTimer.current) clearTimeout(shortTimer.current);
-    const qid = q.id;
-    shortTimer.current = setTimeout(() => {
-      saveAnswer.mutate(
-        { question_id: qid, selected: value ? [value] : [] },
-        { onError: (e) => toast(apiError(e), "error") },
-      );
-    }, 600);
-  };
-
-  const flushShortAnswer = (value: string) => {
-    if (shortTimer.current) clearTimeout(shortTimer.current);
-    saveAnswer.mutate(
-      { question_id: q.id, selected: value ? [value] : [] },
-      { onError: (e) => toast(apiError(e), "error") },
-    );
-  };
-
-  const choose = (optionId: string) => {
-    let next: string[];
-    if (q.type === "multiple") {
-      next = selected.includes(optionId)
-        ? selected.filter((x) => x !== optionId)
-        : [...selected, optionId];
-    } else {
-      next = [optionId];
-    }
-    setAnswers((a) => ({ ...a, [q.id]: next }));
     saveAnswer.mutate(
       { question_id: q.id, selected: next },
       { onError: (e) => toast(apiError(e), "error") },
     );
+  };
+
+  const onAnswerChange = (next: string[]) => {
+    setAnswers((a) => ({ ...a, [q.id]: next }));
+    if (q.type === "short") {
+      if (shortTimer.current) clearTimeout(shortTimer.current);
+      const qid = q.id;
+      shortTimer.current = setTimeout(() => {
+        saveAnswer.mutate(
+          { question_id: qid, selected: next },
+          { onError: (e) => toast(apiError(e), "error") },
+        );
+      }, 600);
+    }
   };
 
   return (
@@ -170,57 +155,13 @@ export function AttemptPage() {
             Вопрос {current + 1} из {questions.length}
           </div>
           <Card>
-            <CardContent className="space-y-4 py-6">
-              <RichText as="p" className="text-lg font-medium leading-snug">
-                {q.text}
-              </RichText>
-              {q.type === "multiple" && (
-                <p className="text-xs text-muted-foreground">Можно выбрать несколько вариантов</p>
-              )}
-              {q.type === "short" ? (
-                <div className="space-y-1.5">
-                  <Input
-                    type="text"
-                    inputMode="text"
-                    value={selected[0] ?? ""}
-                    onChange={(e) => setShortAnswer(e.target.value)}
-                    onBlur={(e) => flushShortAnswer(e.target.value)}
-                    placeholder="Ваш ответ"
-                    maxLength={200}
-                    className="h-11 max-w-md text-base"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Впишите краткий ответ: число, слово или короткую фразу.
-                  </p>
-                </div>
-              ) : (
-              <div className="space-y-2">
-                {q.options.map((o) => {
-                  const active = selected.includes(o.id);
-                  return (
-                    <button
-                      key={o.id}
-                      onClick={() => choose(o.id)}
-                      className={cn(
-                        "flex w-full items-center gap-3 rounded-md border p-3 text-left text-sm transition-colors",
-                        active ? "border-primary bg-primary/5" : "hover:bg-accent",
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          "flex h-5 w-5 shrink-0 items-center justify-center border",
-                          q.type === "multiple" ? "rounded" : "rounded-full",
-                          active ? "border-primary bg-primary text-primary-foreground" : "border-input",
-                        )}
-                      >
-                        {active && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
-                      </span>
-                      <RichText>{o.text}</RichText>
-                    </button>
-                  );
-                })}
-              </div>
-              )}
+            <CardContent className="py-6">
+              <QuestionBody
+                question={q}
+                value={selected}
+                onChange={onAnswerChange}
+                onCommit={persist}
+              />
             </CardContent>
           </Card>
 

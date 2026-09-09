@@ -1,6 +1,7 @@
-import { ChevronDown, ChevronUp, Plus, Trash2, X } from "lucide-react";
-import { useRef } from "react";
+import { ImagePlus, Plus, Trash2, X } from "lucide-react";
+import { useRef, type ReactNode } from "react";
 
+import { useUploadQuestionImage } from "@/api/tests";
 import type { QuestionDraft, QuestionType } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,21 +9,46 @@ import { FormatToolbar } from "@/components/ui/format-toolbar";
 import { Input } from "@/components/ui/input";
 import { RichText } from "@/components/ui/rich-text";
 import { Select } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/toast";
+import { apiError } from "@/lib/api";
 import { coerceType, nextOptionId, TYPE_LABELS } from "./question-utils";
 
 interface Props {
   index: number;
-  total: number;
+  testId: string;
   question: QuestionDraft;
   onChange: (q: QuestionDraft) => void;
   onRemove: () => void;
-  onMove: (dir: -1 | 1) => void;
+  /** ручка для перетаскивания, приходит из сортируемой обёртки */
+  dragHandle?: ReactNode;
 }
 
-export function QuestionCard({ index, total, question, onChange, onRemove, onMove }: Props) {
+const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+
+export function QuestionCard({ index, testId, question, onChange, onRemove, dragHandle }: Props) {
   const q = question;
   const textRef = useRef<HTMLTextAreaElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const toast = useToast();
+  const upload = useUploadQuestionImage(testId);
+
+  const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (file.size > MAX_IMAGE_BYTES) {
+      toast("Картинка больше 2 МБ", "error");
+      return;
+    }
+    try {
+      const url = await upload.mutateAsync(file);
+      onChange({ ...q, image_url: url });
+    } catch (err) {
+      toast(apiError(err), "error");
+    }
+  };
 
   const toggleCorrect = (id: string) => {
     if (q.type === "multiple") {
@@ -60,6 +86,7 @@ export function QuestionCard({ index, total, question, onChange, onRemove, onMov
     <Card>
       <CardContent className="space-y-3 p-4">
         <div className="flex flex-wrap items-center gap-2">
+          {dragHandle}
           <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-medium">
             {index + 1}
           </span>
@@ -84,13 +111,7 @@ export function QuestionCard({ index, total, question, onChange, onRemove, onMov
               className="h-9 w-16"
               title="Баллов за вопрос"
             />
-            <Button variant="ghost" size="icon" disabled={index === 0} onClick={() => onMove(-1)}>
-              <ChevronUp className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" disabled={index === total - 1} onClick={() => onMove(1)}>
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={onRemove}>
+            <Button variant="ghost" size="icon" onClick={onRemove} title="Удалить вопрос">
               <Trash2 className="h-4 w-4 text-destructive" />
             </Button>
           </div>
@@ -123,6 +144,44 @@ export function QuestionCard({ index, total, question, onChange, onRemove, onMov
           )}
         </div>
 
+        <div>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            hidden
+            onChange={onFile}
+          />
+          {q.image_url ? (
+            <div className="relative w-fit">
+              <img
+                src={q.image_url}
+                alt="Картинка к вопросу"
+                className="max-h-48 rounded-md border object-contain"
+              />
+              <button
+                type="button"
+                onClick={() => onChange({ ...q, image_url: null })}
+                className="absolute -right-2 -top-2 rounded-full border bg-card p-1 text-muted-foreground shadow-sm"
+                title="Убрать картинку"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={upload.isPending}
+              onClick={() => fileRef.current?.click()}
+            >
+              {upload.isPending ? <Spinner /> : <ImagePlus className="h-4 w-4" />}
+              <span>Добавить картинку</span>
+            </Button>
+          )}
+        </div>
+
         {q.type === "short" ? (
           <div className="space-y-2">
             <p className="text-xs text-muted-foreground">
@@ -151,39 +210,39 @@ export function QuestionCard({ index, total, question, onChange, onRemove, onMov
             )}
           </div>
         ) : (
-        <div className="space-y-2">
-          {q.options.map((o) => {
-            const checked = q.correct.includes(o.id);
-            return (
-              <div key={o.id} className="flex items-center gap-2">
-                <input
-                  type={q.type === "multiple" ? "checkbox" : "radio"}
-                  checked={checked}
-                  onChange={() => toggleCorrect(o.id)}
-                  title="Правильный ответ"
-                  className="h-4 w-4"
-                />
-                <Input
-                  value={o.text}
-                  onChange={(e) => setOptionText(o.id, e.target.value)}
-                  placeholder={`Вариант ${o.id.toUpperCase()}`}
-                  disabled={q.type === "boolean"}
-                />
-                {q.type !== "boolean" && q.options.length > 2 && (
-                  <Button variant="ghost" size="icon" onClick={() => removeOption(o.id)}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            );
-          })}
-          {q.type !== "boolean" && q.options.length < 10 && (
-            <Button variant="ghost" size="sm" onClick={addOption}>
-              <Plus className="h-4 w-4" />
-              <span>Вариант</span>
-            </Button>
-          )}
-        </div>
+          <div className="space-y-2">
+            {q.options.map((o) => {
+              const checked = q.correct.includes(o.id);
+              return (
+                <div key={o.id} className="flex items-center gap-2">
+                  <input
+                    type={q.type === "multiple" ? "checkbox" : "radio"}
+                    checked={checked}
+                    onChange={() => toggleCorrect(o.id)}
+                    title="Правильный ответ"
+                    className="h-4 w-4"
+                  />
+                  <Input
+                    value={o.text}
+                    onChange={(e) => setOptionText(o.id, e.target.value)}
+                    placeholder={`Вариант ${o.id.toUpperCase()}`}
+                    disabled={q.type === "boolean"}
+                  />
+                  {q.type !== "boolean" && q.options.length > 2 && (
+                    <Button variant="ghost" size="icon" onClick={() => removeOption(o.id)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              );
+            })}
+            {q.type !== "boolean" && q.options.length < 10 && (
+              <Button variant="ghost" size="sm" onClick={addOption}>
+                <Plus className="h-4 w-4" />
+                <span>Вариант</span>
+              </Button>
+            )}
+          </div>
         )}
       </CardContent>
     </Card>
