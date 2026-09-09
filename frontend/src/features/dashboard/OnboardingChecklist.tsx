@@ -90,7 +90,7 @@ export function OnboardingChecklist() {
       <CardContent className="space-y-4 py-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="font-semibold">С чего начать</h2>
+            <h2 className="text-base font-semibold tracking-tight">С чего начать</h2>
             <p className="text-sm text-muted-foreground">
               Выполнено {doneCount} из {STEPS.length}
             </p>

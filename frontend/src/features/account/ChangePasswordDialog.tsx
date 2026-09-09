@@ -48,7 +48,8 @@ export function ChangePasswordDialog({ open, onClose }: { open: boolean; onClose
           />
         </div>
         <Button type="submit" className="w-full" disabled={busy}>
-          {busy && <Spinner />} Сохранить
+          {busy && <Spinner />}
+          <span>Сохранить</span>
         </Button>
       </form>
     </Dialog>

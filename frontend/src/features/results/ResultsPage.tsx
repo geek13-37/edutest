@@ -42,16 +42,18 @@ export function ResultsPage() {
   return (
     <div className="space-y-6">
       <Link to="/teacher/classes" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="h-4 w-4" /> К классам
+        <ArrowLeft className="h-4 w-4" />
+        <span>К классам</span>
       </Link>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">{data.test_title}</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{data.test_title}</h1>
           <p className="text-sm text-muted-foreground">{data.class_name}</p>
         </div>
         <Button variant="outline" onClick={download}>
-          <Download className="h-4 w-4" /> Экспорт в Excel
+          <Download className="h-4 w-4" />
+          <span>Экспорт в Excel</span>
         </Button>
       </div>
 
@@ -124,7 +126,7 @@ function Stat({ label, value }: { label: string; value: string | number }) {
     <Card>
       <CardContent className="py-4">
         <div className="text-xs text-muted-foreground">{label}</div>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="text-2xl font-bold tracking-tight">{value}</div>
       </CardContent>
     </Card>
   );

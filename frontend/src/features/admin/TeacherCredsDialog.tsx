@@ -38,7 +38,8 @@ export function TeacherCredsDialog({
           </div>
         </div>
         <Button variant="outline" size="sm" onClick={copy}>
-          <Copy className="h-4 w-4" /> Скопировать
+          <Copy className="h-4 w-4" />
+          <span>Скопировать</span>
         </Button>
       </div>
     </Dialog>

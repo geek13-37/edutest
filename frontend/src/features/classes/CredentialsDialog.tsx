@@ -41,13 +41,16 @@ export function CredentialsDialog({
               downloadHandoutsPdf(classId, items).catch((e) => toast(apiError(e), "error"))
             }
           >
-            <Printer className="h-4 w-4" /> PDF для печати
+            <Printer className="h-4 w-4" />
+            <span>PDF для печати</span>
           </Button>
           <Button size="sm" variant="outline" onClick={() => downloadCsv(items)}>
-            <Table className="h-4 w-4" /> CSV
+            <Table className="h-4 w-4" />
+            <span>CSV</span>
           </Button>
           <Button size="sm" variant="outline" onClick={copyAll}>
-            <Copy className="h-4 w-4" /> Скопировать
+            <Copy className="h-4 w-4" />
+            <span>Скопировать</span>
           </Button>
         </div>
 

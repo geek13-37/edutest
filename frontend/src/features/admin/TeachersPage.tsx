@@ -58,7 +58,7 @@ export function TeachersPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Учителя</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Учителя</h1>
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
           <Select
             value={schoolFilter}
@@ -76,7 +76,8 @@ export function TeachersPage() {
             ))}
           </Select>
           <Button onClick={() => setOpen(true)} disabled={!schools.data?.length}>
-            <Plus className="h-4 w-4" /> Добавить
+            <Plus className="h-4 w-4" />
+            <span>Добавить</span>
           </Button>
         </div>
       </div>
@@ -170,7 +171,8 @@ export function TeachersPage() {
             />
           </div>
           <Button type="submit" className="w-full" disabled={createTeacher.isPending || !form.school_id}>
-            {createTeacher.isPending && <Spinner />} Создать и показать пароль
+            {createTeacher.isPending && <Spinner />}
+            <span>Создать и показать пароль</span>
           </Button>
         </form>
       </Dialog>

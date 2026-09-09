@@ -67,7 +67,7 @@ export function AuditPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Журнал действий</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Журнал действий</h1>
         <p className="text-sm text-muted-foreground">
           Кто и когда менял школы, учителей и администраторов. Записи не редактируются.
         </p>

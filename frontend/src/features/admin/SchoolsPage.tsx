@@ -62,9 +62,10 @@ export function SchoolsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Школы</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Школы</h1>
         <Button onClick={() => setOpen(true)}>
-          <Plus className="h-4 w-4" /> Новая школа
+          <Plus className="h-4 w-4" />
+          <span>Новая школа</span>
         </Button>
       </div>
 
@@ -128,7 +129,8 @@ export function SchoolsPage() {
                     title="Выгрузить все данные школы в Excel"
                     onClick={() => exportSchool(s.id, s.name)}
                   >
-                    <Download className="h-4 w-4" /> Экспорт
+                    <Download className="h-4 w-4" />
+                    <span>Экспорт</span>
                   </Button>
                   {s.archived_at ? (
                     <>
@@ -142,7 +144,8 @@ export function SchoolsPage() {
                           })
                         }
                       >
-                        <ArchiveRestore className="h-4 w-4" /> Восстановить
+                        <ArchiveRestore className="h-4 w-4" />
+                        <span>Восстановить</span>
                       </Button>
                       <Button
                         variant="ghost"
@@ -244,7 +247,8 @@ export function SchoolsPage() {
             Префикс логинов учеников школа получит автоматически.
           </p>
           <Button type="submit" className="w-full" disabled={create.isPending}>
-            {create.isPending && <Spinner />} Создать
+            {create.isPending && <Spinner />}
+            <span>Создать</span>
           </Button>
         </form>
       </Dialog>

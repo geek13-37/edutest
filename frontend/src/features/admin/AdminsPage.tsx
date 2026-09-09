@@ -43,9 +43,10 @@ export function AdminsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Администраторы</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Администраторы</h1>
         <Button onClick={() => setOpen(true)}>
-          <Plus className="h-4 w-4" /> Новый админ
+          <Plus className="h-4 w-4" />
+          <span>Новый админ</span>
         </Button>
       </div>
 
@@ -95,7 +96,8 @@ export function AdminsPage() {
                 onClick={() => setGenOpen(true)}
                 className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
               >
-                <Wand2 className="h-3.5 w-3.5" /> Сгенерировать
+                <Wand2 className="h-3.5 w-3.5" />
+                <span>Сгенерировать</span>
               </button>
             </div>
             <PasswordInput
@@ -112,7 +114,8 @@ export function AdminsPage() {
             </p>
           </div>
           <Button type="submit" className="w-full" disabled={create.isPending}>
-            {create.isPending && <Spinner />} Создать
+            {create.isPending && <Spinner />}
+            <span>Создать</span>
           </Button>
         </form>
       </Dialog>

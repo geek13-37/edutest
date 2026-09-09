@@ -46,10 +46,12 @@ export function StudentsCard({ classId }: { classId: string }) {
     <Card>
       <CardHeader className="flex-col items-start gap-3 space-y-0 sm:flex-row sm:items-center sm:justify-between">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Users className="h-4 w-4" /> Ученики ({members.data?.length ?? 0})
+          <Users className="h-4 w-4" />
+          <span>Ученики ({members.data?.length ?? 0})</span>
         </CardTitle>
         <Button size="sm" onClick={() => setAddOpen(true)}>
-          <UserPlus className="h-4 w-4" /> Добавить учеников
+          <UserPlus className="h-4 w-4" />
+          <span>Добавить учеников</span>
         </Button>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -213,7 +215,8 @@ function AddStudentsDialog({
               disabled={oneName.trim().length < 2 || createOne.isPending}
               onClick={submitOne}
             >
-              {createOne.isPending && <Spinner />} Создать аккаунт
+              {createOne.isPending && <Spinner />}
+              <span>Создать аккаунт</span>
             </Button>
           </div>
         )}
@@ -235,7 +238,8 @@ function AddStudentsDialog({
               disabled={createBulk.isPending || !bulkText.trim()}
               onClick={submitBulk}
             >
-              {createBulk.isPending && <Spinner />} Создать аккаунты
+              {createBulk.isPending && <Spinner />}
+              <span>Создать аккаунты</span>
             </Button>
           </div>
         )}
@@ -311,7 +315,8 @@ function ExistingPicker({ classId }: { classId: string }) {
               <span className="font-mono text-xs text-muted-foreground">{s.username}</span>
               {inClass && (
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Check className="h-3 w-3" /> в классе
+                  <Check className="h-3 w-3" />
+                  <span>в классе</span>
                 </span>
               )}
             </label>

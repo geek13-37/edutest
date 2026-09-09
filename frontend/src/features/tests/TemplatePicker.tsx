@@ -270,7 +270,8 @@ export function TemplatePicker({
         disabled={pending || !resolved}
         onClick={() => resolved && onCreate(resolved)}
       >
-        {pending && <Spinner />} Создать и открыть редактор
+        {pending && <Spinner />}
+        <span>Создать и открыть редактор</span>
       </Button>
     </div>
   );

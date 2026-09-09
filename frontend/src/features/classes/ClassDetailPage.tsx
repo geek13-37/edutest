@@ -1,4 +1,4 @@
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Send, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
@@ -33,11 +33,12 @@ export function ClassDetailPage() {
         to="/teacher/classes"
         className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="h-4 w-4" /> К классам
+        <ArrowLeft className="h-4 w-4" />
+        <span>К классам</span>
       </Link>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Класс {klass.data.display_name}</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Класс {klass.data.display_name}</h1>
         <div className="flex gap-2">
           <Button
             variant="outline"
@@ -63,7 +64,8 @@ export function ClassDetailPage() {
               });
             }}
           >
-            <Trash2 className="h-4 w-4" /> Удалить
+            <Trash2 className="h-4 w-4" />
+            <span>Удалить</span>
           </Button>
         </div>
       </div>
@@ -75,7 +77,8 @@ export function ClassDetailPage() {
           <CardHeader className="flex-col items-start gap-3 space-y-0 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle className="text-base">Назначенные тесты</CardTitle>
             <Button size="sm" onClick={() => setAssignOpen(true)}>
-              Назначить тест
+              <Send className="h-4 w-4" />
+              <span>Назначить тест</span>
             </Button>
           </CardHeader>
           <CardContent className="space-y-2">

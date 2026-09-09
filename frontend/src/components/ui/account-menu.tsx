@@ -77,14 +77,16 @@ export function AccountMenu({
             onClick={() => run(onChangePassword)}
             className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-accent"
           >
-            <KeyRound className="h-4 w-4 text-muted-foreground" /> Сменить пароль
+            <KeyRound className="h-4 w-4 text-muted-foreground" />
+            <span>Сменить пароль</span>
           </button>
           <button
             role="menuitem"
             onClick={() => run(onLogout)}
             className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-destructive hover:bg-accent"
           >
-            <LogOut className="h-4 w-4" /> Выйти
+            <LogOut className="h-4 w-4" />
+            <span>Выйти</span>
           </button>
         </div>
       )}

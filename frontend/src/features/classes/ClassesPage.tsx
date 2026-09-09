@@ -47,9 +47,10 @@ export function ClassesPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Классы</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Классы</h1>
         <Button onClick={() => setOpen(true)}>
-          <Plus className="h-4 w-4" /> Новый класс
+          <Plus className="h-4 w-4" />
+          <span>Новый класс</span>
         </Button>
       </div>
 
@@ -60,7 +61,8 @@ export function ClassesPage() {
           description="Класс: список учеников школы. Учителя одной школы ведут ее классы совместно. Заведите класс, добавьте в него учеников, затем назначайте классу тесты."
           action={
             <Button onClick={() => setOpen(true)}>
-              <Plus className="h-4 w-4" /> Создать первый класс
+              <Plus className="h-4 w-4" />
+              <span>Создать первый класс</span>
             </Button>
           }
         />
@@ -158,7 +160,8 @@ export function ClassesPage() {
             disabled={create.isPending || (mode === "parallel" && !letter.trim())}
             className="w-full"
           >
-            {create.isPending && <Spinner />} Создать
+            {create.isPending && <Spinner />}
+            <span>Создать</span>
           </Button>
         </form>
       </Dialog>

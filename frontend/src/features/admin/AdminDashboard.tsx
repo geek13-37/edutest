@@ -38,7 +38,7 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Обзор</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Обзор</h1>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {counts.map((t) => {
@@ -124,7 +124,8 @@ export function AdminDashboard() {
               <div className="h-40 animate-pulse rounded-md bg-muted" />
             ) : !a.dormant_schools.length ? (
               <p className="flex items-center gap-2 py-6 text-sm text-muted-foreground">
-                <MoonStar className="h-4 w-4" /> Все школы что-то проводили за последний месяц.
+                <MoonStar className="h-4 w-4" />
+                <span>Все школы что-то проводили за последний месяц.</span>
               </p>
             ) : (
               <div className="max-h-72 space-y-2 overflow-y-auto">

@@ -107,7 +107,8 @@ export function TestSettingsDialog({
         </div>
 
         <Button type="submit" className="w-full" disabled={update.isPending}>
-          {update.isPending && <Spinner />} Сохранить
+          {update.isPending && <Spinner />}
+          <span>Сохранить</span>
         </Button>
       </form>
     </Dialog>

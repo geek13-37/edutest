@@ -18,7 +18,7 @@ export function TeacherDashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Обзор</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Обзор</h1>
 
       <OnboardingChecklist />
 

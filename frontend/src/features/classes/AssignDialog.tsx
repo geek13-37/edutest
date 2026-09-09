@@ -103,7 +103,8 @@ export function AssignDialog({
           </div>
 
           <Button type="submit" className="w-full" disabled={create.isPending}>
-            {create.isPending && <Spinner />} Назначить
+            {create.isPending && <Spinner />}
+            <span>Назначить</span>
           </Button>
         </form>
       )}

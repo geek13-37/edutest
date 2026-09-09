@@ -53,13 +53,13 @@ export function Dialog({
         {dismissible && (
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 text-muted-foreground hover:text-foreground"
+            className="absolute right-4 top-4 rounded-md p-0.5 text-muted-foreground transition-colors hover:text-foreground sm:right-5 sm:top-5"
             aria-label="Закрыть"
           >
             <X className="h-4 w-4" />
           </button>
         )}
-        {title && <h2 className="text-lg font-semibold">{title}</h2>}
+        {title && <h2 className="pr-8 text-lg font-semibold tracking-tight">{title}</h2>}
         {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
         <div className={cn(title && "mt-4")}>{children}</div>
       </div>

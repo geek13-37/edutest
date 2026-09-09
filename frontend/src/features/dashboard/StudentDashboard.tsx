@@ -19,7 +19,7 @@ export function StudentDashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Мои тесты</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Мои тесты</h1>
       {!data?.length && (
         <Card>
           <CardContent className="py-10 text-center text-muted-foreground">

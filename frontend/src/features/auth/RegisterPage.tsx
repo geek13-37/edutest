@@ -118,7 +118,8 @@ export function RegisterPage() {
                   onClick={() => setGenOpen(true)}
                   className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
                 >
-                  <Wand2 className="h-3.5 w-3.5" /> Сгенерировать
+                  <Wand2 className="h-3.5 w-3.5" />
+                  <span>Сгенерировать</span>
                 </button>
               </div>
               <PasswordInput
@@ -137,7 +138,8 @@ export function RegisterPage() {
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={busy || !school.data}>
-              {busy && <Spinner />} Создать аккаунт
+              {busy && <Spinner />}
+              <span>Создать аккаунт</span>
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
