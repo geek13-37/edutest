@@ -1,4 +1,4 @@
-import { Sparkles, Wand2 } from "lucide-react";
+import { Sparkles, TriangleAlert, Wand2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useAIGenerate, useAIRevise } from "@/api/tests";
@@ -71,7 +71,8 @@ export function AIPanel({
     <Card className="sticky top-4">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Sparkles className="h-4 w-4 text-ai" /> Помощник ИИ
+          <Sparkles className="h-4 w-4 text-ai" />
+          <span>EduAI</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -109,7 +110,8 @@ export function AIPanel({
             onClick={() => runGenerate()}
             disabled={generate.isPending || genPrompt.trim().length < 3}
           >
-            {generate.isPending ? <Spinner /> : <Wand2 className="h-4 w-4" />} Сгенерировать
+            {generate.isPending ? <Spinner /> : <Wand2 className="h-4 w-4" />}
+            <span>Сгенерировать</span>
           </Button>
         </div>
 
@@ -128,13 +130,23 @@ export function AIPanel({
             onClick={runRevise}
             disabled={revise.isPending || !hasQuestions || revisePrompt.trim().length < 3}
           >
-            {revise.isPending && <Spinner />} Применить правки
+            {revise.isPending && <Spinner />}
+            <span>Применить правки</span>
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Результат ИИ попадает в черновик. Проверьте и при необходимости отредактируйте вручную
-          перед сохранением.
-        </p>
+        <div className="space-y-2 border-t pt-4 text-xs text-muted-foreground">
+          <p>
+            Результат ИИ попадает в черновик. Проверьте и при необходимости отредактируйте
+            вручную перед сохранением.
+          </p>
+          <p className="flex items-start gap-1.5">
+            <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
+            <span>
+              EduAI может допускать ошибки: проверяйте формулировки вопросов и правильные
+              ответы перед публикацией.
+            </span>
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
