@@ -7,7 +7,6 @@ import type { QuestionDraft, QuestionType } from "@/api/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageLoader, Spinner } from "@/components/ui/spinner";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useToast } from "@/components/ui/toast";
 import { apiError } from "@/lib/api";
 import { AIPanel } from "./AIPanel";
@@ -103,21 +102,27 @@ export function TestEditorPage() {
             <Link to="/teacher/tests" className="shrink-0 text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-0.5">
-              <span className="truncate font-semibold">{test.title}</span>
-              <Badge variant={test.status === "published" ? "success" : "secondary"}>
-                {test.status === "published" ? "опубликован" : "черновик"}
-              </Badge>
-              {dirty && <span className="text-xs text-warning">не сохранено</span>}
+            <div className="flex min-w-0 flex-1 flex-col gap-1 lg:flex-row lg:items-center lg:gap-2">
+              <span className="truncate font-semibold" title={test.title}>
+                {test.title}
+              </span>
+              <div className="flex flex-wrap items-center gap-1.5 lg:shrink-0">
+                {test.subject && <Badge variant="info">{test.subject}</Badge>}
+                <Badge variant={test.status === "published" ? "success" : "muted"}>
+                  {test.status === "published" ? "опубликован" : "черновик"}
+                </Badge>
+                {dirty && <Badge variant="warning">не сохранено</Badge>}
+              </div>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => setSettingsOpen(true)}>
-              <Settings2 className="h-4 w-4" /> Настройки
+              <Settings2 className="h-4 w-4" />
+              <span>Настройки</span>
             </Button>
             <Button size="sm" onClick={save} disabled={replace.isPending}>
-              {replace.isPending ? <Spinner /> : <Save className="h-4 w-4" />} Сохранить
+              {replace.isPending ? <Spinner /> : <Save className="h-4 w-4" />}
+              <span>Сохранить</span>
             </Button>
             {test.status === "published" ? (
               <Button size="sm" variant="outline" onClick={() => doPublish(false)}>
@@ -131,7 +136,8 @@ export function TestEditorPage() {
                 disabled={publish.isPending || publishBlockReason !== null}
                 title={publishBlockReason ?? undefined}
               >
-                <Check className="h-4 w-4" /> Опубликовать
+                <Check className="h-4 w-4" />
+                <span>Опубликовать</span>
               </Button>
             )}
             <Button
@@ -141,7 +147,8 @@ export function TestEditorPage() {
               disabled={test.status !== "published"}
               title={test.status !== "published" ? "Сначала опубликуйте тест" : undefined}
             >
-              <Send className="h-4 w-4" /> Назначить
+              <Send className="h-4 w-4" />
+              <span>Назначить</span>
             </Button>
           </div>
         </div>
@@ -191,7 +198,8 @@ export function TestEditorPage() {
             />
           ))}
           <Button variant="outline" onClick={addQuestion} className="w-full">
-            <Plus className="h-4 w-4" /> Добавить вопрос
+            <Plus className="h-4 w-4" />
+            <span>Добавить вопрос</span>
           </Button>
         </div>
 

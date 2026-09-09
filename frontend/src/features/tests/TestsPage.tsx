@@ -55,9 +55,10 @@ export function TestsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Тесты</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Тесты</h1>
         <Button onClick={() => setOpen(true)}>
-          <Plus className="h-4 w-4" /> Новый тест
+          <Plus className="h-4 w-4" />
+          <span>Новый тест</span>
         </Button>
       </div>
 
@@ -83,7 +84,8 @@ export function TestsPage() {
           description="Соберите тест из вопросов вручную или с помощью ИИ, опубликуйте его, а затем назначьте классу на странице класса. Черновик назначить нельзя."
           action={
             <Button onClick={() => setOpen(true)}>
-              <Plus className="h-4 w-4" /> Создать первый тест
+              <Plus className="h-4 w-4" />
+              <span>Создать первый тест</span>
             </Button>
           }
         />
@@ -93,14 +95,14 @@ export function TestsPage() {
             <Card key={t.id}>
               <CardHeader className="flex-col items-start gap-3 space-y-0 sm:flex-row sm:justify-between">
                 <div className="min-w-0">
-                  <CardTitle className="flex flex-wrap items-center gap-2">
-                    {t.title}
-                    <Badge variant={t.status === "published" ? "success" : "secondary"}>
+                  <CardTitle className="leading-snug">{t.title}</CardTitle>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                    {t.subject && <Badge variant="info">{t.subject}</Badge>}
+                    <Badge variant={t.status === "published" ? "success" : "muted"}>
                       {t.status === "published" ? "опубликован" : "черновик"}
                     </Badge>
-                    {t.subject && <Badge variant="info">{t.subject}</Badge>}
-                  </CardTitle>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  </div>
+                  <p className="mt-1.5 text-sm text-muted-foreground">
                     {t.questions_count}{" "}
                     {pluralRu(t.questions_count, ["вопрос", "вопроса", "вопросов"])}
                     {t.time_limit_min ? ` · ${t.time_limit_min} мин` : ""}
@@ -113,7 +115,8 @@ export function TestsPage() {
                     size="sm"
                     onClick={() => navigate(`/teacher/tests/${t.id}/edit`)}
                   >
-                    <Pencil className="h-4 w-4" /> Редактировать
+                    <Pencil className="h-4 w-4" />
+                    <span>Редактировать</span>
                   </Button>
                   <Button
                     variant="ghost"
