@@ -3,6 +3,7 @@ import { Check, X } from "lucide-react";
 import { useAttemptReview } from "@/api/assignments";
 import { Badge } from "@/components/ui/badge";
 import { Dialog } from "@/components/ui/dialog";
+import { RichText } from "@/components/ui/rich-text";
 import { PageLoader } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +46,7 @@ export function AttemptReviewDialog({
                     {a.is_correct ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
                   </span>
                   <p className="text-sm font-medium">
-                    {i + 1}. {a.question.text}
+                    {i + 1}. <RichText>{a.question.text}</RichText>
                   </p>
                 </div>
                 {a.question.type === "short" ? (
@@ -75,9 +76,9 @@ export function AttemptReviewDialog({
                         )}
                       >
                         <span className="text-xs text-muted-foreground">
-                          {chosen ? "✔ выбрал(а)" : "•"}
+                          {chosen ? "выбрал(а)" : "•"}
                         </span>
-                        {o.text}
+                        <RichText>{o.text}</RichText>
                         {right && <span className="text-xs">(верно)</span>}
                       </li>
                     );

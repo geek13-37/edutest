@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -7,6 +7,8 @@ import { useAttempt, useSaveAnswer, useSubmitAttempt } from "@/api/attempts";
 import type { AttemptResult } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { RichText } from "@/components/ui/rich-text";
 import { PageLoader, Spinner } from "@/components/ui/spinner";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useToast } from "@/components/ui/toast";
@@ -169,13 +171,15 @@ export function AttemptPage() {
           </div>
           <Card>
             <CardContent className="space-y-4 py-6">
-              <p className="text-lg font-medium">{q.text}</p>
+              <RichText as="p" className="text-lg font-medium leading-snug">
+                {q.text}
+              </RichText>
               {q.type === "multiple" && (
                 <p className="text-xs text-muted-foreground">Можно выбрать несколько вариантов</p>
               )}
               {q.type === "short" ? (
                 <div className="space-y-1.5">
-                  <input
+                  <Input
                     type="text"
                     inputMode="text"
                     value={selected[0] ?? ""}
@@ -183,7 +187,7 @@ export function AttemptPage() {
                     onBlur={(e) => flushShortAnswer(e.target.value)}
                     placeholder="Ваш ответ"
                     maxLength={200}
-                    className="flex h-11 w-full max-w-md rounded-md border border-input bg-background px-3 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="h-11 max-w-md text-base"
                   />
                   <p className="text-xs text-muted-foreground">
                     Впишите краткий ответ: число, слово или короткую фразу.
@@ -209,9 +213,9 @@ export function AttemptPage() {
                           active ? "border-primary bg-primary text-primary-foreground" : "border-input",
                         )}
                       >
-                        {active && "✓"}
+                        {active && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
                       </span>
-                      {o.text}
+                      <RichText>{o.text}</RichText>
                     </button>
                   );
                 })}
@@ -226,11 +230,13 @@ export function AttemptPage() {
               onClick={() => setCurrent((c) => Math.max(0, c - 1))}
               disabled={current === 0}
             >
-              <ChevronLeft className="h-4 w-4" /> Назад
+              <ChevronLeft className="h-4 w-4" />
+              <span>Назад</span>
             </Button>
             {current < questions.length - 1 ? (
               <Button onClick={() => setCurrent((c) => Math.min(questions.length - 1, c + 1))}>
-                Далее <ChevronRight className="h-4 w-4" />
+                <span>Далее</span>
+                <ChevronRight className="h-4 w-4" />
               </Button>
             ) : (
               <Button
@@ -246,7 +252,8 @@ export function AttemptPage() {
                 }}
                 disabled={submit.isPending}
               >
-                {submit.isPending && <Spinner />} Завершить тест
+                {submit.isPending && <Spinner />}
+                <span>Завершить тест</span>
               </Button>
             )}
           </div>

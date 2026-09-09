@@ -1,9 +1,12 @@
 import { ChevronDown, ChevronUp, Plus, Trash2, X } from "lucide-react";
+import { useRef } from "react";
 
 import type { QuestionDraft, QuestionType } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { FormatToolbar } from "@/components/ui/format-toolbar";
 import { Input } from "@/components/ui/input";
+import { RichText } from "@/components/ui/rich-text";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { coerceType, nextOptionId, TYPE_LABELS } from "./question-utils";
@@ -19,6 +22,7 @@ interface Props {
 
 export function QuestionCard({ index, total, question, onChange, onRemove, onMove }: Props) {
   const q = question;
+  const textRef = useRef<HTMLTextAreaElement>(null);
 
   const toggleCorrect = (id: string) => {
     if (q.type === "multiple") {
@@ -92,11 +96,32 @@ export function QuestionCard({ index, total, question, onChange, onRemove, onMov
           </div>
         </div>
 
-        <Textarea
-          placeholder="Текст вопроса"
-          value={q.text}
-          onChange={(e) => onChange({ ...q, text: e.target.value })}
-        />
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs text-muted-foreground">Текст вопроса</span>
+            <FormatToolbar
+              targetRef={textRef}
+              value={q.text}
+              onChange={(text) => onChange({ ...q, text })}
+            />
+          </div>
+          <Textarea
+            ref={textRef}
+            placeholder="Текст вопроса"
+            value={q.text}
+            onChange={(e) => onChange({ ...q, text: e.target.value })}
+          />
+          <p className="text-xs text-muted-foreground">
+            Форматирование видит ученик. Выделите текст и нажмите кнопку, либо впишите вручную:
+            `код`, *курсив* для формул, **жирный**, теги {"<sup>"} и {"<sub>"}.
+          </p>
+          {q.text.trim() && (
+            <div className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
+              <span className="text-xs text-muted-foreground">Просмотр: </span>
+              <RichText>{q.text}</RichText>
+            </div>
+          )}
+        </div>
 
         {q.type === "short" ? (
           <div className="space-y-2">
@@ -120,7 +145,8 @@ export function QuestionCard({ index, total, question, onChange, onRemove, onMov
             ))}
             {q.correct.length < 5 && (
               <Button variant="ghost" size="sm" onClick={addAnswer}>
-                <Plus className="h-4 w-4" /> Вариант ответа
+                <Plus className="h-4 w-4" />
+                <span>Вариант ответа</span>
               </Button>
             )}
           </div>
@@ -153,7 +179,8 @@ export function QuestionCard({ index, total, question, onChange, onRemove, onMov
           })}
           {q.type !== "boolean" && q.options.length < 10 && (
             <Button variant="ghost" size="sm" onClick={addOption}>
-              <Plus className="h-4 w-4" /> Вариант
+              <Plus className="h-4 w-4" />
+              <span>Вариант</span>
             </Button>
           )}
         </div>
