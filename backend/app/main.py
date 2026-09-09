@@ -23,12 +23,7 @@ def create_app() -> FastAPI:
 
     app.add_middleware(SlowAPIMiddleware)
     app.add_middleware(SecurityHeadersMiddleware)
-    # загрузка картинок к вопросам идёт мимо общего лимита тела (свой лимит 2 МБ в media_service)
-    app.add_middleware(
-        BodySizeLimitMiddleware,
-        max_bytes=settings.max_body_bytes,
-        exempt_prefixes=("/images",),
-    )
+    app.add_middleware(BodySizeLimitMiddleware, max_bytes=settings.max_body_bytes)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,

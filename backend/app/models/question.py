@@ -27,8 +27,6 @@ class Question(Base):
         SAEnum(QuestionType, name="question_type"), nullable=False
     )
     text: Mapped[str] = mapped_column(String(2000), nullable=False)
-    # ссылка на картинку к вопросу: /api/v1/media/<uuid> либо None
-    image_url: Mapped[str | None] = mapped_column(String(300), nullable=True)
     # options: [{"id": "a", "text": "..."}, ...]; для short пустой список
     options: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
     # correct: id правильных вариантов ["a", "c"]; для short - строки-ответы ["12", "12 см"]
