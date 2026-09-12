@@ -16,6 +16,7 @@ import { ClassesPage } from "./features/classes/ClassesPage";
 import { MyClassesPage } from "./features/classes/MyClassesPage";
 import { StudentDashboard } from "./features/dashboard/StudentDashboard";
 import { TeacherDashboard } from "./features/dashboard/TeacherDashboard";
+import { LandingPage } from "./features/landing/LandingPage";
 import { ResultsPage } from "./features/results/ResultsPage";
 import { AttemptPage } from "./features/take/AttemptPage";
 import { TestEditorPage } from "./features/tests/TestEditorPage";
@@ -41,6 +42,14 @@ function HomeRedirect() {
   if (loading) return <PageLoader />;
   if (!user) return <Navigate to="/login" replace />;
   return <Navigate to={homeFor(user.role)} replace />;
+}
+
+/** Корень сайта: авторизованных сразу отправляем в их раздел, остальным показываем лендинг. */
+function RootRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <PageLoader />;
+  if (user) return <Navigate to={homeFor(user.role)} replace />;
+  return <LandingPage />;
 }
 
 export function App() {
@@ -85,7 +94,7 @@ export function App() {
         element={<Protected role="student"><AttemptPage /></Protected>}
       />
 
-      <Route path="/" element={<HomeRedirect />} />
+      <Route path="/" element={<RootRoute />} />
       <Route path="*" element={<HomeRedirect />} />
     </Routes>
   );
