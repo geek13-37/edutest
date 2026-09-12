@@ -1,4 +1,4 @@
-import { ArrowLeft, Send, Trash2 } from "lucide-react";
+import { ArrowLeft, ClipboardList, Send, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
@@ -75,7 +75,10 @@ export function ClassDetailPage() {
 
         <Card>
           <CardHeader className="flex-col items-start gap-3 space-y-0 sm:flex-row sm:items-center sm:justify-between">
-            <CardTitle className="text-base">Назначенные тесты</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <ClipboardList className="h-4 w-4" />
+              <span>Назначенные тесты</span>
+            </CardTitle>
             <Button size="sm" onClick={() => setAssignOpen(true)}>
               <Send className="h-4 w-4" />
               <span>Назначить тест</span>
