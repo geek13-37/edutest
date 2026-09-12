@@ -20,13 +20,14 @@ import {
   Check,
   Eye,
   GripVertical,
+  MoreHorizontal,
   Plus,
   Save,
   Send,
   Settings2,
   TriangleAlert,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
 import { usePublishTest, useReplaceQuestions, useTest } from "@/api/tests";
@@ -95,6 +96,75 @@ function SortableQuestion({
           </button>
         }
       />
+    </div>
+  );
+}
+
+function HeaderMoreMenu({
+  onPreview,
+  onSettings,
+}: {
+  onPreview: () => void;
+  onSettings: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const run = (fn: () => void) => {
+    setOpen(false);
+    fn();
+  };
+
+  return (
+    <div ref={ref} className="relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        title="Ещё"
+      >
+        <MoreHorizontal className="h-4 w-4" />
+      </Button>
+
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 top-full z-50 mt-1 w-48 overflow-hidden rounded-md border bg-card shadow-lg"
+        >
+          <button
+            role="menuitem"
+            onClick={() => run(onPreview)}
+            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-accent"
+          >
+            <Eye className="h-4 w-4 text-muted-foreground" />
+            <span>Предпросмотр</span>
+          </button>
+          <button
+            role="menuitem"
+            onClick={() => run(onSettings)}
+            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-accent"
+          >
+            <Settings2 className="h-4 w-4 text-muted-foreground" />
+            <span>Настройки</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -197,16 +267,16 @@ export function TestEditorPage() {
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-30 border-b bg-card/95 backdrop-blur">
-        <div className="container space-y-2 py-2.5 lg:flex lg:h-14 lg:items-center lg:gap-3 lg:space-y-0 lg:py-0">
-          <div className="flex min-w-0 items-center gap-3 lg:flex-1">
+        <div className="container flex flex-wrap items-center gap-3 py-2.5 sm:h-14 sm:flex-nowrap sm:py-0">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
             <Link to="/teacher/tests" className="shrink-0 text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <div className="flex min-w-0 flex-1 flex-col gap-1 lg:flex-row lg:items-center lg:gap-2">
+            <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
               <span className="truncate font-semibold" title={test.title}>
                 {test.title}
               </span>
-              <div className="flex flex-wrap items-center gap-1.5 lg:shrink-0">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {test.subject && <Badge variant="info">{test.subject}</Badge>}
                 <Badge variant={test.status === "published" ? "success" : "muted"}>
                   {test.status === "published" ? "опубликован" : "черновик"}
@@ -215,15 +285,7 @@ export function TestEditorPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setPreviewOpen(true)}>
-              <Eye className="h-4 w-4" />
-              <span>Предпросмотр</span>
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => setSettingsOpen(true)}>
-              <Settings2 className="h-4 w-4" />
-              <span>Настройки</span>
-            </Button>
+          <div className="flex shrink-0 items-center gap-2">
             <Button size="sm" onClick={save} disabled={replace.isPending}>
               {replace.isPending ? <Spinner /> : <Save className="h-4 w-4" />}
               <span>Сохранить</span>
@@ -254,29 +316,19 @@ export function TestEditorPage() {
               <Send className="h-4 w-4" />
               <span>Назначить</span>
             </Button>
+            <HeaderMoreMenu onPreview={() => setPreviewOpen(true)} onSettings={() => setSettingsOpen(true)} />
           </div>
         </div>
-        {test.status !== "published" && (
-          <div className="border-t bg-muted/40">
-            <div className="container py-2 text-xs">
-              {publishBlockReason ? (
-                <span className="flex items-center gap-1.5 text-warning">
-                  <TriangleAlert className="h-3.5 w-3.5 shrink-0" />
-                  {publishBlockReason}
-                </span>
-              ) : (
-                <span className="text-muted-foreground">
-                  Черновик готов. Опубликуйте тест, затем назначьте его классам кнопкой
-                  «Назначить». Ученики видят только назначенные опубликованные тесты.
-                </span>
-              )}
-            </div>
-          </div>
-        )}
       </header>
 
       <div className="container grid gap-6 py-6 lg:grid-cols-[1fr_340px]">
         <div className="space-y-4">
+          {test.status !== "published" && publishBlockReason && (
+            <div className="flex items-center gap-1.5 rounded-md bg-warning/10 p-2.5 text-xs text-warning">
+              <TriangleAlert className="h-3.5 w-3.5 shrink-0" />
+              <span>{publishBlockReason}</span>
+            </div>
+          )}
           {draft.length === 0 && (
             <div className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">
               Вопросов пока нет. Добавьте вручную или сгенерируйте через ИИ справа.
