@@ -25,11 +25,14 @@ class Settings(BaseSettings):
     admin_email: str = ""
     admin_password: str = ""
 
-    openrouter_api_key: str = ""
-    openrouter_model: str = "minimax/minimax-m3"
+    chadgpt_api_key: str = ""
+    # gpt-5-nano/mini формально дешевле, но это reasoning-модели: тратят сотни токенов
+    # на скрытые рассуждения и часто не укладываются в таймаут шлюза ChadGPT (504).
+    # gemini/grok ниже - обычные модели без reasoning, отвечают за секунды.
+    chadgpt_model: str = "gemini-3.1-flash-lite-preview"
     # резервные модели через запятую: пробуются по очереди, если основная недоступна
-    openrouter_fallback_models: str = "nvidia/nemotron-3-super-120b-a12b:free"
-    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    chadgpt_fallback_models: str = "grok-4-fast-latest"
+    chadgpt_base_url: str = "https://ask.chadgpt.ru/api/v1"
 
     max_body_bytes: int = 1_000_000
 

@@ -31,9 +31,9 @@ services:
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:5173}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
-      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
-      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-minimax/minimax-m3}
-      OPENROUTER_FALLBACK_MODELS: ${OPENROUTER_FALLBACK_MODELS:-nvidia/nemotron-3-super-120b-a12b:free}
+      CHADGPT_API_KEY: ${CHADGPT_API_KEY}
+      CHADGPT_MODEL: ${CHADGPT_MODEL:-gemini-3.1-flash-lite-preview}
+      CHADGPT_FALLBACK_MODELS: ${CHADGPT_FALLBACK_MODELS:-grok-4-fast-latest}
       ENV: ${ENV:-dev}
     ports:
       # только localhost: наружу API отдаёт nginx-фронт через /api,

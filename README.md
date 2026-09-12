@@ -6,7 +6,7 @@
 
 - **Backend**: FastAPI + SQLAlchemy + PostgreSQL + Alembic (папка `backend/`)
 - **Frontend**: Vite + React + TypeScript + Tailwind + shadcn-подобные компоненты (папка `frontend/`)
-- **ИИ**: генерация и доработка вопросов через OpenRouter (модель `minimax/minimax-m3:free`)
+- **ИИ**: генерация и доработка вопросов через ChadGPT API (модель `gemini-3.1-flash-lite-preview`)
 
 ## Роли
 
@@ -68,7 +68,7 @@
 ```bash
 cp .env.example .env
 # впишите JWT_SECRET (длинная случайная строка), ADMIN_EMAIL / ADMIN_PASSWORD
-# (первый администратор) и OPENROUTER_API_KEY
+# (первый администратор) и CHADGPT_API_KEY
 docker compose up -d --build
 ```
 

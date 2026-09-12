@@ -46,7 +46,7 @@ _SYSTEM = (
 
 
 def _client() -> AsyncOpenAI:
-    return AsyncOpenAI(api_key=settings.openrouter_api_key, base_url=settings.openrouter_base_url)
+    return AsyncOpenAI(api_key=settings.chadgpt_api_key, base_url=settings.chadgpt_base_url)
 
 
 def _extract_json(text: str) -> dict:
@@ -93,8 +93,8 @@ _UNAVAILABLE = "Сервис ИИ временно недоступен, поп�
 
 def _models() -> list[str]:
     """Основная модель + резервные: если провайдер перегружен, пробуем следующую."""
-    primary = settings.openrouter_model
-    fallbacks = [m.strip() for m in settings.openrouter_fallback_models.split(",") if m.strip()]
+    primary = settings.chadgpt_model
+    fallbacks = [m.strip() for m in settings.chadgpt_fallback_models.split(",") if m.strip()]
     return list(dict.fromkeys([primary, *fallbacks]))
 
 
@@ -111,7 +111,7 @@ class AIService:
             max_tokens=8000,
             timeout=90,
         )
-        # OpenRouter иногда отдаёт ошибку провайдера в теле с кодом 200
+        # провайдер иногда отдаёт ошибку в теле с кодом 200
         err = getattr(resp, "error", None)
         if err or not getattr(resp, "choices", None):
             raise RuntimeError(err.get("message") if isinstance(err, dict) else "пустой ответ ИИ")
