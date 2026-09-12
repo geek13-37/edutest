@@ -3,7 +3,6 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useCreateTest, useDeleteTest, useTests } from "@/api/tests";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
@@ -14,6 +13,7 @@ import { useToast } from "@/components/ui/toast";
 import { apiError } from "@/lib/api";
 import { pluralRu } from "@/lib/utils";
 
+import { TagsButton } from "./TagsButton";
 import { TemplatePicker, type NewTestPayload } from "./TemplatePicker";
 
 export function TestsPage() {
@@ -107,12 +107,9 @@ export function TestsPage() {
             >
               <CardHeader className="flex-col items-start gap-3 space-y-0 sm:flex-row sm:justify-between">
                 <div className="min-w-0">
-                  <CardTitle className="leading-snug">{t.title}</CardTitle>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                    {t.subject && <Badge variant="info">{t.subject}</Badge>}
-                    <Badge variant={t.status === "published" ? "success" : "muted"}>
-                      {t.status === "published" ? "опубликован" : "черновик"}
-                    </Badge>
+                  <div className="flex min-w-0 items-center gap-2">
+                    <CardTitle className="min-w-0 shrink truncate leading-snug">{t.title}</CardTitle>
+                    <TagsButton subject={t.subject} status={t.status} />
                   </div>
                   <p className="mt-1.5 text-sm text-muted-foreground">
                     {t.questions_count}{" "}

@@ -41,6 +41,7 @@ import { cn } from "@/lib/utils";
 import { AIPanel } from "./AIPanel";
 import { AssignTestDialog } from "./AssignTestDialog";
 import { QuestionCard } from "./QuestionCard";
+import { TagsButton } from "./TagsButton";
 import { TestPreviewDialog } from "./TestPreviewDialog";
 import { TestSettingsDialog } from "./TestSettingsDialog";
 import { blankQuestion, validateQuestions } from "./question-utils";
@@ -272,17 +273,12 @@ export function TestEditorPage() {
             <Link to="/teacher/tests" className="shrink-0 text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-5 w-5" />
             </Link>
-            <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
-              <span className="truncate font-semibold" title={test.title}>
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <span className="min-w-0 shrink truncate font-semibold" title={test.title}>
                 {test.title}
               </span>
-              <div className="flex flex-wrap items-center gap-1.5">
-                {test.subject && <Badge variant="info">{test.subject}</Badge>}
-                <Badge variant={test.status === "published" ? "success" : "muted"}>
-                  {test.status === "published" ? "опубликован" : "черновик"}
-                </Badge>
-                {dirty && <Badge variant="warning">не сохранено</Badge>}
-              </div>
+              <TagsButton subject={test.subject} status={test.status} />
+              {dirty && <Badge variant="warning" className="shrink-0">не сохранено</Badge>}
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
