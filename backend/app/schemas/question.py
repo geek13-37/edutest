@@ -48,6 +48,8 @@ class QuestionIn(StrictModel):
             raise ValueError("correct содержит дубликаты")
         if self.type in (QuestionType.single, QuestionType.boolean) and len(self.correct) != 1:
             raise ValueError("для этого типа вопроса должен быть ровно один правильный вариант")
+        if self.type == QuestionType.multiple and len(self.correct) < 2:
+            raise ValueError("для вопроса с несколькими вариантами нужно минимум 2 правильных")
         if self.type == QuestionType.boolean and len(self.options) != 2:
             raise ValueError("вопрос верно/неверно должен иметь ровно 2 варианта")
         return self

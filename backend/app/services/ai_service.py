@@ -74,6 +74,13 @@ def _parse_questions(raw: dict) -> list[QuestionIn]:
         raise ValueError("в ответе ИИ нет массива questions")
     out: list[QuestionIn] = []
     for item in items:
+        # ИИ иногда ставит type=multiple, но отмечает только один правильный вариант
+        # (нарушает инструкцию из системного промпта). Не выбрасываем вопрос, а понижаем
+        # до single - это соответствует тому, что модель реально отметила.
+        if isinstance(item, dict) and item.get("type") == "multiple":
+            correct = item.get("correct")
+            if isinstance(correct, list) and len(correct) < 2:
+                item = {**item, "type": "single", "correct": correct[:1]}
         try:
             q = QuestionIn.model_validate(item)
         except ValidationError as e:
