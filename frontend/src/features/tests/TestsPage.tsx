@@ -105,7 +105,7 @@ export function TestsPage() {
               }}
               className="cursor-pointer transition-colors hover:bg-accent/50"
             >
-              <CardHeader className="flex-col items-start gap-3 space-y-0 sm:flex-row sm:justify-between">
+              <CardHeader className="flex-col items-start gap-3 space-y-0 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0 w-full self-stretch sm:w-auto sm:self-auto">
                   <div className="flex min-w-0 items-center gap-2">
                     <CardTitle className="min-w-0 shrink truncate leading-snug">{t.title}</CardTitle>
