@@ -3,10 +3,20 @@ import { useEffect, useRef, useState } from "react";
 
 import type { TestStatus } from "@/api/types";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 /** Кнопка "Теги" с попапом: предмет и статус теста, чтобы не разводить их
  * бейджами прямо у заголовка (там они переносятся на отдельную строку). */
-export function TagsButton({ subject, status }: { subject: string | null; status: TestStatus }) {
+export function TagsButton({
+  subject,
+  status,
+  align = "left",
+}: {
+  subject: string | null;
+  status: TestStatus;
+  /** к какому краю кнопки прижать попап - "right", если кнопка близко к правому краю экрана */
+  align?: "left" | "right";
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -44,7 +54,10 @@ export function TagsButton({ subject, status }: { subject: string | null; status
         <div
           role="menu"
           onClick={(e) => e.stopPropagation()}
-          className="absolute left-0 top-full z-50 mt-1 flex w-max flex-col items-start gap-1.5 rounded-md border bg-card p-2 shadow-lg"
+          className={cn(
+            "absolute top-full z-50 mt-1 flex w-max flex-col items-start gap-1.5 rounded-md border bg-card p-2 shadow-lg",
+            align === "left" ? "left-0" : "right-0",
+          )}
         >
           {subject && <Badge variant="info">{subject}</Badge>}
           <Badge variant={status === "published" ? "success" : "muted"}>

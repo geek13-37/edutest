@@ -277,11 +277,11 @@ export function TestEditorPage() {
               <span className="min-w-0 shrink truncate font-semibold" title={test.title}>
                 {test.title}
               </span>
-              <TagsButton subject={test.subject} status={test.status} />
+              <TagsButton subject={test.subject} status={test.status} align="right" />
               {dirty && <Badge variant="warning" className="shrink-0">не сохранено</Badge>}
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:shrink-0">
             <Button size="sm" onClick={save} disabled={replace.isPending}>
               {replace.isPending ? <Spinner /> : <Save className="h-4 w-4" />}
               <span>Сохранить</span>

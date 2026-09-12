@@ -98,7 +98,7 @@ export function SchoolsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {data.map((s) => (
             <Card key={s.id} className={s.archived_at ? "opacity-90" : undefined}>
               <CardHeader className="flex-col gap-3 space-y-0 sm:flex-row sm:items-start sm:justify-between">
