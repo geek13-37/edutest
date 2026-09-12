@@ -109,13 +109,15 @@ export function ClassDetailPage() {
                   </Link>
                   <Button
                     variant="ghost"
-                    size="icon"
+                    size="sm"
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                     onClick={() => {
                       if (confirm("Удалить назначение и все связанные попытки?"))
                         delAssignment.mutate(a.id);
                     }}
                   >
-                    <Trash2 className="h-4 w-4 text-destructive" />
+                    <Trash2 className="h-4 w-4" />
+                    <span>Удалить</span>
                   </Button>
                 </div>
               </div>
