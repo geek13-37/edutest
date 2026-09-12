@@ -1,4 +1,4 @@
-import { ClipboardList, Pencil, Plus, Trash2 } from "lucide-react";
+import { ClipboardList, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -92,7 +92,19 @@ export function TestsPage() {
       ) : (
         <div className="grid gap-4">
           {shown.map((t) => (
-            <Card key={t.id}>
+            <Card
+              key={t.id}
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/teacher/tests/${t.id}/edit`)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  navigate(`/teacher/tests/${t.id}/edit`);
+                }
+              }}
+              className="cursor-pointer transition-colors hover:bg-accent/50"
+            >
               <CardHeader className="flex-col items-start gap-3 space-y-0 sm:flex-row sm:justify-between">
                 <div className="min-w-0">
                   <CardTitle className="leading-snug">{t.title}</CardTitle>
@@ -109,25 +121,18 @@ export function TestsPage() {
                     {t.topic ? ` · ${t.topic}` : ""}
                   </p>
                 </div>
-                <div className="flex shrink-0 gap-1">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => navigate(`/teacher/tests/${t.id}/edit`)}
-                  >
-                    <Pencil className="h-4 w-4" />
-                    <span>Редактировать</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      if (confirm(`Удалить тест «${t.title}»?`)) del.mutate(t.id);
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (confirm(`Удалить тест «${t.title}»?`)) del.mutate(t.id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span>Удалить</span>
+                </Button>
               </CardHeader>
             </Card>
           ))}
