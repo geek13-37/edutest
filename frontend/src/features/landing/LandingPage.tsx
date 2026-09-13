@@ -8,7 +8,7 @@ import {
   Users,
   Wand2,
 } from "lucide-react";
-import type { ComponentType } from "react";
+import { useState, type ComponentType } from "react";
 import { Link } from "react-router-dom";
 
 import dashboardDark from "@/assets/landing-dashboard-dark.png";
@@ -20,6 +20,7 @@ import resultsLight from "@/assets/landing-results.png";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog } from "@/components/ui/dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useTheme } from "@/lib/theme";
 import { TiltCard } from "./TiltCard";
@@ -100,8 +101,18 @@ function Header() {
   );
 }
 
-function Screenshot({ src, alt, aspect }: { src: string; alt: string; aspect?: string }) {
-  return (
+function Screenshot({
+  src,
+  alt,
+  aspect,
+  onClick,
+}: {
+  src: string;
+  alt: string;
+  aspect?: string;
+  onClick?: () => void;
+}) {
+  const card = (
     <TiltCard
       className={`overflow-hidden rounded-xl border bg-card shadow-2xl shadow-primary/10 ${aspect ?? ""}`}
     >
@@ -112,6 +123,19 @@ function Screenshot({ src, alt, aspect }: { src: string; alt: string; aspect?: s
       />
     </TiltCard>
   );
+
+  if (!onClick) return card;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="block w-full cursor-zoom-in text-left transition-opacity hover:opacity-90"
+      aria-label={`Открыть увеличенное изображение: ${alt}`}
+    >
+      {card}
+    </button>
+  );
 }
 
 export function LandingPage() {
@@ -119,6 +143,7 @@ export function LandingPage() {
   const hero = theme === "dark" ? heroDark : heroLight;
   const dashboard = theme === "dark" ? dashboardDark : dashboardLight;
   const results = theme === "dark" ? resultsDark : resultsLight;
+  const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
 
   return (
     <div className="min-h-screen">
@@ -141,11 +166,11 @@ export function LandingPage() {
                 <span>Тесты, которые собирает ИИ</span>
               </Badge>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-                Платформа образовательных тестирований
+                Тесты и проверка знаний без часов ручной работы
               </h1>
               <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-                Учитель создает тест вручную или поручает это ИИ, назначает его классу,
-                ученики проходят его онлайн, а результаты и оценки готовы сразу.
+                Соберите тест сами или доверьте это ИИ, назначьте классу: ученики проходят
+                его онлайн, а оценки появляются сразу после сдачи.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link to="/login">
@@ -164,13 +189,13 @@ export function LandingPage() {
           <div className="container">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                Зачем нужен Edutest
+                Что меняется для учителя
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Составление тестов, проверка ответов и выставление оценок вручную
-                отнимают у учителя часы. Edutest берет рутину на себя: вопросы
-                собирает ИИ или сам учитель, ответы проверяются автоматически, а
-                оценка появляется сразу после того, как ученик сдал тест.
+                Раньше: печатать вопросы, сверять ответы каждого ученика вручную,
+                считать баллы и выставлять оценки, часы работы после каждого теста.
+                Сейчас: вопросы собирает ИИ или вы сами за пару минут, ответы Edutest
+                проверяет автоматически, а оценка готова сразу после сдачи теста.
               </p>
             </div>
 
@@ -180,6 +205,9 @@ export function LandingPage() {
                   src={dashboard}
                   alt="Обзор учителя: классы, тесты, последние тесты"
                   aspect="aspect-[5/2]"
+                  onClick={() =>
+                    setLightbox({ src: dashboard, alt: "Обзор учителя: классы, тесты, последние тесты" })
+                  }
                 />
                 <p className="mt-3 text-center text-sm text-muted-foreground">Обзор для учителя</p>
               </div>
@@ -188,6 +216,9 @@ export function LandingPage() {
                   src={results}
                   alt="Результаты теста по классу с оценками"
                   aspect="aspect-[5/2]"
+                  onClick={() =>
+                    setLightbox({ src: results, alt: "Результаты теста по классу с оценками" })
+                  }
                 />
                 <p className="mt-3 text-center text-sm text-muted-foreground">Результаты класса</p>
               </div>
@@ -226,6 +257,16 @@ export function LandingPage() {
           <span>© {new Date().getFullYear()} Edutest</span>
         </div>
       </footer>
+
+      <Dialog
+        open={lightbox !== null}
+        onClose={() => setLightbox(null)}
+        className="max-w-4xl p-2 sm:p-2"
+      >
+        {lightbox && (
+          <img src={lightbox.src} alt={lightbox.alt} className="w-full rounded-lg" />
+        )}
+      </Dialog>
     </div>
   );
 }
