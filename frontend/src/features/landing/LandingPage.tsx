@@ -23,6 +23,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useTheme } from "@/lib/theme";
+import { Reveal } from "./Reveal";
 import { TiltCard } from "./TiltCard";
 
 // цветовые чипы иконок: полные классы прописаны буквально, чтобы Tailwind их не срезал
@@ -130,7 +131,7 @@ function Screenshot({
     <button
       type="button"
       onClick={onClick}
-      className="block w-full cursor-zoom-in text-left transition-opacity hover:opacity-90"
+      className="block w-full cursor-zoom-in text-left transition duration-150 ease-out hover:opacity-90 active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100"
       aria-label={`Открыть увеличенное изображение: ${alt}`}
     >
       {card}
@@ -187,7 +188,7 @@ export function LandingPage() {
 
         <section className="border-y bg-muted/40 py-16">
           <div className="container">
-            <div className="mx-auto max-w-2xl text-center">
+            <Reveal className="mx-auto max-w-2xl text-center">
               <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
                 Что меняется для учителя
               </h2>
@@ -197,10 +198,10 @@ export function LandingPage() {
                 Сейчас: вопросы собирает ИИ или вы сами за пару минут, ответы Edutest
                 проверяет автоматически, а оценка готова сразу после сдачи теста.
               </p>
-            </div>
+            </Reveal>
 
             <div className="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2">
-              <div>
+              <Reveal>
                 <Screenshot
                   src={dashboard}
                   alt="Обзор учителя: классы, тесты, последние тесты"
@@ -210,8 +211,8 @@ export function LandingPage() {
                   }
                 />
                 <p className="mt-3 text-center text-sm text-muted-foreground">Обзор для учителя</p>
-              </div>
-              <div>
+              </Reveal>
+              <Reveal delay={100}>
                 <Screenshot
                   src={results}
                   alt="Результаты теста по классу с оценками"
@@ -221,28 +222,30 @@ export function LandingPage() {
                   }
                 />
                 <p className="mt-3 text-center text-sm text-muted-foreground">Результаты класса</p>
-              </div>
+              </Reveal>
             </div>
           </div>
         </section>
 
         <section className="container py-16 sm:py-24">
-          <div className="mx-auto max-w-2xl text-center">
+          <Reveal className="mx-auto max-w-2xl text-center">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Возможности</h2>
-          </div>
+          </Reveal>
           <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {FEATURES.map((f) => (
-              <Card key={f.title} className="transition-colors hover:border-primary">
-                <CardContent className="space-y-3 pt-6">
-                  <div
-                    className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${CHIP[f.color]}`}
-                  >
-                    <f.icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-semibold tracking-tight">{f.title}</h3>
-                  <p className="text-sm text-muted-foreground">{f.text}</p>
-                </CardContent>
-              </Card>
+            {FEATURES.map((f, i) => (
+              <Reveal key={f.title} delay={(i % 3) * 80}>
+                <Card className="transition duration-200 ease-out hover:-translate-y-0.5 hover:border-primary hover:shadow-md motion-reduce:hover:translate-y-0">
+                  <CardContent className="space-y-3 pt-6">
+                    <div
+                      className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${CHIP[f.color]}`}
+                    >
+                      <f.icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-semibold tracking-tight">{f.title}</h3>
+                    <p className="text-sm text-muted-foreground">{f.text}</p>
+                  </CardContent>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </section>
