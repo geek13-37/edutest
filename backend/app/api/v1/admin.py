@@ -6,6 +6,7 @@ from fastapi import APIRouter, Query, Response, status
 from fastapi.responses import StreamingResponse
 
 from app.core.deps import CurrentAdmin, DbSession
+from app.models import SchoolRequestStatus
 from app.schemas.admin import (
     AdminCreateIn,
     AdminOut,
@@ -15,16 +16,23 @@ from app.schemas.admin import (
     SchoolCreateIn,
     SchoolUpdateIn,
     SetActiveIn,
+    SetLeadIn,
     StatsOut,
     TeacherAdminOut,
     TeacherCreateIn,
     TeacherCredentials,
+)
+from app.schemas.school_request import (
+    SchoolRequestApproveOut,
+    SchoolRequestOut,
+    SchoolRequestRejectIn,
 )
 from app.services import (
     admin_service,
     analytics_service,
     audit_service,
     export_service,
+    school_request_service,
     school_service,
 )
 
@@ -90,6 +98,31 @@ def audit_log(
         for r in rows
     ]
     return {"items": items, "total": total}
+
+
+# ── Заявки на подключение ───────────────────────────────
+@router.get("/school-requests", response_model=list[SchoolRequestOut])
+def list_school_requests(
+    admin: CurrentAdmin,
+    db: DbSession,
+    status_: SchoolRequestStatus | None = Query(default=None, alias="status"),
+):
+    return school_request_service.list_requests(db, req_status=status_)
+
+
+@router.post("/school-requests/{request_id}/approve", response_model=SchoolRequestApproveOut)
+def approve_school_request(request_id: uuid.UUID, admin: CurrentAdmin, db: DbSession):
+    req, school = school_request_service.approve_request(db, request_id, actor=admin)
+    return SchoolRequestApproveOut(
+        request=SchoolRequestOut.model_validate(req), school=_school_with_counts(db, school)
+    )
+
+
+@router.post("/school-requests/{request_id}/reject", response_model=SchoolRequestOut)
+def reject_school_request(
+    request_id: uuid.UUID, data: SchoolRequestRejectIn, admin: CurrentAdmin, db: DbSession
+):
+    return school_request_service.reject_request(db, request_id, reason=data.reason, actor=admin)
 
 
 # ── Школы ────────────────────────────────────────────────
@@ -192,6 +225,13 @@ def reset_teacher_password(teacher_id: uuid.UUID, admin: CurrentAdmin, db: DbSes
     return admin_service.reset_teacher_password(db, teacher_id, actor=admin)
 
 
+@router.patch("/teachers/{teacher_id}/lead", response_model=TeacherAdminOut)
+def set_teacher_lead(teacher_id: uuid.UUID, data: SetLeadIn, admin: CurrentAdmin, db: DbSession):
+    return _teacher_out(
+        db, admin_service.set_teacher_lead(db, teacher_id, data.is_lead, actor=admin)
+    )
+
+
 # ── Администраторы ───────────────────────────────────────
 @router.get("/admins", response_model=list[AdminOut])
 def list_admins(admin: CurrentAdmin, db: DbSession):
@@ -214,6 +254,7 @@ def _teacher_out(db, t) -> TeacherAdminOut:
         full_name=t.full_name,
         email=t.email,
         is_active=t.is_active,
+        is_lead=t.is_lead,
         school_id=t.school_id,
         school_name=school.name if school else None,
         created_at=t.created_at,

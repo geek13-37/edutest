@@ -7,6 +7,7 @@ import { AppShell } from "./components/layout/AppShell";
 import { PageLoader } from "./components/ui/spinner";
 import { AdminsPage } from "./features/admin/AdminsPage";
 import { AuditPage } from "./features/admin/AuditPage";
+import { SchoolRequestsPage } from "./features/admin/SchoolRequestsPage";
 import { SchoolsPage } from "./features/admin/SchoolsPage";
 import { TeachersPage } from "./features/admin/TeachersPage";
 import { LoginPage } from "./features/auth/LoginPage";
@@ -18,6 +19,7 @@ import { StudentDashboard } from "./features/dashboard/StudentDashboard";
 import { TeacherDashboard } from "./features/dashboard/TeacherDashboard";
 import { LandingPage } from "./features/landing/LandingPage";
 import { ResultsPage } from "./features/results/ResultsPage";
+import { SchoolLeadPage } from "./features/school/SchoolLeadPage";
 import { AttemptPage } from "./features/take/AttemptPage";
 import { TestEditorPage } from "./features/tests/TestEditorPage";
 import { TestsPage } from "./features/tests/TestsPage";
@@ -67,6 +69,7 @@ export function App() {
             </Suspense>
           }
         />
+        <Route path="/admin/school-requests" element={<SchoolRequestsPage />} />
         <Route path="/admin/schools" element={<SchoolsPage />} />
         <Route path="/admin/teachers" element={<TeachersPage />} />
         <Route path="/admin/admins" element={<AdminsPage />} />
@@ -79,6 +82,7 @@ export function App() {
         <Route path="/teacher/classes/:id" element={<ClassDetailPage />} />
         <Route path="/teacher/tests" element={<TestsPage />} />
         <Route path="/teacher/assignments/:id/results" element={<ResultsPage />} />
+        <Route path="/teacher/school" element={<SchoolLeadPage />} />
       </Route>
       <Route
         path="/teacher/tests/:id/edit"

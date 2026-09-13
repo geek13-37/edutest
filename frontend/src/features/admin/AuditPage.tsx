@@ -26,18 +26,22 @@ const ACTIONS: [string, string][] = [
   ["teacher.deactivate", "Учитель отключен"],
   ["teacher.reset_password", "Сброшен пароль учителя"],
   ["admin.create", "Создан администратор"],
+  ["school_request.approve", "Заявка одобрена"],
+  ["school_request.reject", "Заявка отклонена"],
 ];
 
 const TARGETS: [string, string][] = [
   ["school", "Школы"],
   ["teacher", "Учителя"],
   ["admin", "Администраторы"],
+  ["school_request", "Заявки на подключение"],
 ];
 
-const TARGET_BADGE: Record<string, "default" | "info" | "warning"> = {
+const TARGET_BADGE: Record<string, "default" | "info" | "warning" | "muted"> = {
   school: "default",
   teacher: "info",
   admin: "warning",
+  school_request: "muted",
 };
 
 export function AuditPage() {

@@ -46,4 +46,5 @@ class UserOut(ORMModel):
     full_name: str
     role: UserRole
     is_active: bool = True
+    is_lead: bool = False
     school: SchoolOut | None = None

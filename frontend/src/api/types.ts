@@ -17,6 +17,7 @@ export interface User {
   full_name: string;
   role: Role;
   is_active: boolean;
+  is_lead: boolean;
   school: School | null;
 }
 
@@ -39,6 +40,25 @@ export interface SchoolAdmin {
 }
 
 export type SchoolScope = "active" | "archived" | "all";
+
+export type SchoolRequestStatus = "pending" | "approved" | "rejected";
+
+export interface SchoolRequestAdmin {
+  id: string;
+  school_name: string;
+  city: string;
+  region: string;
+  contact_name: string;
+  contact_email: string | null;
+  contact_phone: string | null;
+  comment: string;
+  status: SchoolRequestStatus;
+  created_at: string;
+  decided_at: string | null;
+  reject_reason: string | null;
+  result_school_id: string | null;
+  signup_code: string | null;
+}
 
 export interface AuditEvent {
   id: string;
@@ -95,9 +115,17 @@ export interface TeacherAdmin {
   full_name: string;
   email: string | null;
   is_active: boolean;
+  is_lead: boolean;
   school_id: string | null;
   school_name: string | null;
   created_at: string;
+}
+
+export interface LeadStats {
+  teachers: number;
+  students: number;
+  classes: number;
+  tests: number;
 }
 
 export interface TeacherCredentials {

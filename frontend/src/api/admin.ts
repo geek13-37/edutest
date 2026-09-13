@@ -7,6 +7,8 @@ import type {
   Analytics,
   AuditList,
   SchoolAdmin,
+  SchoolRequestAdmin,
+  SchoolRequestStatus,
   SchoolScope,
   Stats,
   TeacherAdmin,
@@ -42,6 +44,46 @@ export function useAuditLog(filters: { action?: string; target_type?: string; li
         })
       ).data,
     placeholderData: keepPreviousData,
+  });
+}
+
+export function useSchoolRequests(status?: SchoolRequestStatus) {
+  return useQuery({
+    queryKey: ["admin", "school-requests", status ?? "all"],
+    queryFn: async () =>
+      (
+        await api.get<SchoolRequestAdmin[]>("/admin/school-requests", {
+          params: status ? { status } : {},
+        })
+      ).data,
+  });
+}
+
+export function useApproveSchoolRequest() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) =>
+      (
+        await api.post<{ request: SchoolRequestAdmin; school: SchoolAdmin }>(
+          `/admin/school-requests/${id}/approve`,
+        )
+      ).data,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "school-requests"] });
+      qc.invalidateQueries({ queryKey: ["admin", "schools"] });
+      qc.invalidateQueries({ queryKey: ["admin", "stats"] });
+    },
+  });
+}
+
+export function useRejectSchoolRequest() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, reason }: { id: string; reason?: string }) =>
+      (
+        await api.post<SchoolRequestAdmin>(`/admin/school-requests/${id}/reject`, { reason })
+      ).data,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "school-requests"] }),
   });
 }
 
@@ -161,6 +203,15 @@ export function useSetTeacherActive() {
   return useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) =>
       (await api.patch<TeacherAdmin>(`/admin/teachers/${id}/active`, { is_active })).data,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "teachers"] }),
+  });
+}
+
+export function useSetTeacherLead() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, is_lead }: { id: string; is_lead: boolean }) =>
+      (await api.patch<TeacherAdmin>(`/admin/teachers/${id}/lead`, { is_lead })).data,
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "teachers"] }),
   });
 }

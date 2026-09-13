@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.db.base import utcnow
 from app.models import Class as ClassModel
-from app.models import School, User, UserRole
+from app.models import School, Test, User, UserRole
 from app.services import audit_service
 from app.services.code_words import generate_signup_code
 
@@ -229,6 +229,20 @@ def _counts(db: Session, school_id: uuid.UUID) -> tuple[int, int]:
         )
     ) or 0
     return teachers, students
+
+
+def lead_stats(db: Session, school_id: uuid.UUID) -> dict:
+    teachers, students = _counts(db, school_id)
+    classes = db.scalar(
+        select(func.count(ClassModel.id)).where(ClassModel.school_id == school_id)
+    ) or 0
+    tests = db.scalar(
+        select(func.count(Test.id))
+        .select_from(Test)
+        .join(User, User.id == Test.owner_id)
+        .where(User.school_id == school_id)
+    ) or 0
+    return {"teachers": teachers, "students": students, "classes": classes, "tests": tests}
 
 
 def list_schools(db: Session, *, scope: SchoolScope = "active") -> list[dict]:

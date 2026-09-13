@@ -1,4 +1,4 @@
-import { KeyRound, Plus, Power } from "lucide-react";
+import { KeyRound, Plus, Power, Star } from "lucide-react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -8,6 +8,7 @@ import {
   useCreateTeacher,
   useResetTeacherPassword,
   useSetTeacherActive,
+  useSetTeacherLead,
 } from "@/api/admin";
 import type { TeacherCredentials } from "@/api/types";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,7 @@ export function TeachersPage() {
   const schools = useAdminSchools();
   const createTeacher = useCreateTeacher();
   const setActive = useSetTeacherActive();
+  const setLead = useSetTeacherLead();
   const resetPw = useResetTeacherPassword();
   const toast = useToast();
 
@@ -95,6 +97,7 @@ export function TeachersPage() {
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2 font-medium">
                   {t.full_name}
+                  {t.is_lead && <Badge variant="ai">завуч</Badge>}
                   {!t.is_active && <Badge variant="destructive">отключен</Badge>}
                 </div>
                 <div className="break-words text-xs text-muted-foreground">
@@ -102,6 +105,19 @@ export function TeachersPage() {
                 </div>
               </div>
               <div className="flex shrink-0 gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  title={t.is_lead ? "Снять роль завуча" : "Назначить завучем"}
+                  onClick={() =>
+                    setLead.mutate(
+                      { id: t.id, is_lead: !t.is_lead },
+                      { onError: (e) => toast(apiError(e), "error") },
+                    )
+                  }
+                >
+                  <Star className={t.is_lead ? "h-4 w-4 fill-ai text-ai" : "h-4 w-4"} />
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"

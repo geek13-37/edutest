@@ -20,13 +20,18 @@ ACTION_LABELS: dict[str, str] = {
     "teacher.activate": "Учитель включен",
     "teacher.deactivate": "Учитель отключен",
     "teacher.reset_password": "Сброшен пароль учителя",
+    "teacher.set_lead": "Учитель назначен завучем",
+    "teacher.unset_lead": "С учителя снята роль завуча",
     "admin.create": "Создан администратор",
+    "school_request.approve": "Заявка одобрена",
+    "school_request.reject": "Заявка отклонена",
 }
 
 TARGET_LABELS: dict[str, str] = {
     "school": "Школа",
     "teacher": "Учитель",
     "admin": "Администратор",
+    "school_request": "Заявка на подключение",
 }
 
 

@@ -28,6 +28,7 @@ def list_teachers(db: Session, school_id: uuid.UUID | None = None) -> list[dict]
             "full_name": u.full_name,
             "email": u.email,
             "is_active": u.is_active,
+            "is_lead": u.is_lead,
             "school_id": u.school_id,
             "school_name": s.name if s else None,
             "created_at": u.created_at,
@@ -97,12 +98,33 @@ def set_teacher_active(
     return teacher
 
 
+def set_teacher_lead(
+    db: Session, teacher_id: uuid.UUID, is_lead: bool, actor: User | None = None
+) -> User:
+    teacher = _get_teacher(db, teacher_id)
+    teacher.is_lead = is_lead
+    db.flush()
+    audit_service.record(
+        db,
+        actor=actor,
+        action="teacher.set_lead" if is_lead else "teacher.unset_lead",
+        target_type="teacher",
+        target_id=teacher.id,
+        target_label=f"{teacher.full_name} ({teacher.email})",
+        summary=(f"{teacher.full_name} назначен(а) завучем" if is_lead
+                 else f"{teacher.full_name} больше не завуч"),
+    )
+    return teacher
+
+
 def reset_teacher_password(
-    db: Session, teacher_id: uuid.UUID, actor: User | None = None
+    db: Session, teacher_id: uuid.UUID, actor: User | None = None, *, school_id: uuid.UUID | None = None
 ) -> dict:
     from app.services.auth_service import revoke_all_sessions
 
     teacher = _get_teacher(db, teacher_id)
+    if school_id is not None and teacher.school_id != school_id:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Учитель другой школы")
     password = generate_password()
     teacher.password_hash = hash_password(password)
     revoke_all_sessions(db, teacher.id)

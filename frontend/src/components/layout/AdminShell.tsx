@@ -4,6 +4,7 @@ import { ShellLayout, type NavEntry } from "@/components/layout/ShellLayout";
 
 const nav: NavEntry[] = [
   { to: "/admin", label: "Обзор", end: true },
+  { to: "/admin/school-requests", label: "Заявки" },
   { to: "/admin/schools", label: "Школы" },
   { to: "/admin/teachers", label: "Учителя" },
   { to: "/admin/admins", label: "Админы" },

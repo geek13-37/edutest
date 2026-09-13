@@ -28,6 +28,8 @@ class User(Base, TimestampMixin):
     )
     full_name: Mapped[str] = mapped_column(String(120), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    # завуч: учитель с расширенными правами внутри своей школы (см. app/core/deps.py::get_lead)
+    is_lead: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     school_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("schools.id", ondelete="SET NULL"), nullable=True, index=True
     )

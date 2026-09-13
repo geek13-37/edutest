@@ -62,6 +62,15 @@ def get_student(user: CurrentUser) -> User:
     return user
 
 
+def get_lead(user: CurrentUser) -> User:
+    if user.role != UserRole.teacher or user.school_id is None:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Доступно только учителям")
+    if not user.is_lead:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Доступно только завучам")
+    return user
+
+
 CurrentAdmin = Annotated[User, Depends(get_admin)]
 CurrentTeacher = Annotated[User, Depends(get_teacher)]
 CurrentStudent = Annotated[User, Depends(get_student)]
+CurrentLead = Annotated[User, Depends(get_lead)]

@@ -18,6 +18,7 @@ from app.core.security import (
 )
 from app.models import RefreshSession, School, User, UserRole
 from app.schemas.auth import ChangePasswordIn, LoginIn, RegisterTeacherIn
+from app.services import school_request_service
 
 _CREDENTIALS_ERROR = HTTPException(status.HTTP_401_UNAUTHORIZED, "Неверный логин или пароль")
 
@@ -59,12 +60,16 @@ def register_teacher(db: Session, data: RegisterTeacherIn) -> tuple[User, str, s
     if db.scalar(select(User.id).where(User.email == email)):
         raise HTTPException(status.HTTP_409_CONFLICT, "Пользователь с таким email уже существует")
 
+    matched_request = school_request_service.find_approved_by_contact_email(
+        db, school_id=school.id, email=email
+    )
     user = User(
         email=email,
         password_hash=hash_password(data.password),
         full_name=data.full_name.strip(),
         role=UserRole.teacher,
         school_id=school.id,
+        is_lead=matched_request is not None,
     )
     db.add(user)
     db.flush()

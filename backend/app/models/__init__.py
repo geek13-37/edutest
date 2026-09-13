@@ -5,6 +5,7 @@ from app.models.klass import Class, ClassMember
 from app.models.question import Question, QuestionType
 from app.models.refresh_session import RefreshSession
 from app.models.school import School
+from app.models.school_request import SchoolRequest, SchoolRequestStatus
 from app.models.test import Test, TestStatus
 from app.models.user import User, UserRole
 
@@ -20,6 +21,8 @@ __all__ = [
     "QuestionType",
     "RefreshSession",
     "School",
+    "SchoolRequest",
+    "SchoolRequestStatus",
     "Test",
     "TestStatus",
     "User",

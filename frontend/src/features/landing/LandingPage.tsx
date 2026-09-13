@@ -19,11 +19,12 @@ import resultsDark from "@/assets/landing-results-dark.png";
 import resultsLight from "@/assets/landing-results.png";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useTheme } from "@/lib/theme";
 import { Reveal } from "./Reveal";
+import { SchoolRequestForm } from "./SchoolRequestForm";
 import { TiltCard } from "./TiltCard";
 
 // цветовые чипы иконок: полные классы прописаны буквально, чтобы Tailwind их не срезал
@@ -88,6 +89,11 @@ function Header() {
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          <a href="#school-request" className="hidden sm:block">
+            <Button variant="ghost" size="sm">
+              Оставить заявку
+            </Button>
+          </a>
           <Link to="/login">
             <Button variant="ghost" size="sm">
               Войти
@@ -174,8 +180,13 @@ export function LandingPage() {
                 его онлайн, а оценки появляются сразу после сдачи.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <a href="#school-request">
+                  <Button size="lg">Оставить заявку</Button>
+                </a>
                 <Link to="/login">
-                  <Button size="lg">Войти</Button>
+                  <Button size="lg" variant="outline">
+                    Войти
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -247,6 +258,31 @@ export function LandingPage() {
                 </Card>
               </Reveal>
             ))}
+          </div>
+        </section>
+
+        <section id="school-request" className="border-t bg-muted/40 py-16 sm:py-24">
+          <div className="container">
+            <Reveal className="mx-auto max-w-2xl text-center">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                Подключить школу
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                Оставьте заявку - мы свяжемся с вами, создадим школу и передадим код
+                регистрации для учителей.
+              </p>
+            </Reveal>
+
+            <Reveal delay={100} className="mx-auto mt-10 max-w-xl">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Заявка на подключение</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SchoolRequestForm />
+                </CardContent>
+              </Card>
+            </Reveal>
           </div>
         </section>
       </main>

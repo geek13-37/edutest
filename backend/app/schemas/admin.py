@@ -36,6 +36,7 @@ class TeacherAdminOut(ORMModel):
     full_name: str
     email: EmailStr | None
     is_active: bool
+    is_lead: bool = False
     school_id: uuid.UUID | None
     school_name: str | None
     created_at: datetime
@@ -58,6 +59,10 @@ class SetActiveIn(StrictModel):
     is_active: bool
 
 
+class SetLeadIn(StrictModel):
+    is_lead: bool
+
+
 class AdminOut(ORMModel):
     id: uuid.UUID
     full_name: str
@@ -77,6 +82,13 @@ class StatsOut(ORMModel):
     teachers: int
     students: int
     classes: int
+
+
+class LeadStatsOut(ORMModel):
+    teachers: int
+    students: int
+    classes: int
+    tests: int
 
 
 class AuditEventOut(ORMModel):
